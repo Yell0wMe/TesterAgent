@@ -1,0 +1,69 @@
+# Doc2Spec 输出目录
+out/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# 虚拟环境
+.env
+.venv
+env/
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# 测试
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# 日志
+*.log
+
+# Project specific data
+runs/
+uploads/
+bundles/
+
+# Node.js
+web/node_modules/
+web/.next/
+web/out/
+web/build/
+web/.env*.local
+
+# OS
+.DS_Store
+Thumbs.db

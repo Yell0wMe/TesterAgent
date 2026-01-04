@@ -1,0 +1,32 @@
+version: '0.1'
+id: wechat_contacts_switch
+title: 微信首页到通讯录切换
+
+source:
+  - doc_id: wechat_prd.md
+    loc: 'H2: 功能需求'
+
+goal:
+  user_intent: 在微信首页点击通讯录Tab，确认进入通讯录页面
+  success_state: 页面显示通讯录列表，包含"新的朋友"
+
+preconditions:
+  app:
+    package: com.tencent.mm
+    activity: com.tencent.mm.ui.LauncherUI
+    wait_time: 5
+
+assertions:
+  ui:
+    - id: check_contacts_tab
+      type: ui_text_present
+      target: 新的朋友
+      must: true
+
+evidence:
+  required:
+    - type: screenshot_final
+
+budget:
+  max_steps: 10
+  timeout_sec: 60

@@ -1,0 +1,369 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://doc2spec.dev/schemas/testspec_v0.1.json",
+    "title": "TestSpec DSL v0.1",
+    "description": "文档驱动的手机端自动化测试规格",
+    "type": "object",
+    "required": [
+        "version",
+        "id",
+        "title",
+        "source",
+        "goal",
+        "assertions"
+    ],
+    "properties": {
+        "version": {
+            "type": "string",
+            "description": "DSL 版本",
+            "const": "0.1"
+        },
+        "id": {
+            "type": "string",
+            "description": "全局唯一标识符",
+            "pattern": "^[A-Za-z0-9_-]+-TS-[0-9]{3}$"
+        },
+        "title": {
+            "type": "string",
+            "description": "用例标题",
+            "minLength": 1
+        },
+        "source": {
+            "type": "array",
+            "description": "文档引用",
+            "minItems": 1,
+            "items": {
+                "$ref": "#/$defs/Source"
+            }
+        },
+        "goal": {
+            "$ref": "#/$defs/Goal"
+        },
+        "preconditions": {
+            "$ref": "#/$defs/Preconditions"
+        },
+        "steps": {
+            "type": "array",
+            "description": "执行步骤",
+            "items": {
+                "$ref": "#/$defs/Step"
+            }
+        },
+        "assertions": {
+            "$ref": "#/$defs/Assertions"
+        },
+        "guards": {
+            "$ref": "#/$defs/Guards"
+        },
+        "budget": {
+            "$ref": "#/$defs/Budget"
+        },
+        "evidence": {
+            "$ref": "#/$defs/Evidence"
+        },
+        "tags": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "notes": {
+            "type": "object"
+        }
+    },
+    "$defs": {
+        "Source": {
+            "type": "object",
+            "required": [
+                "doc_id",
+                "loc"
+            ],
+            "properties": {
+                "doc_id": {
+                    "type": "string"
+                },
+                "loc": {
+                    "type": "string"
+                },
+                "quote": {
+                    "type": "string"
+                }
+            }
+        },
+        "Goal": {
+            "type": "object",
+            "required": [
+                "user_intent",
+                "success_state"
+            ],
+            "properties": {
+                "user_intent": {
+                    "type": "string"
+                },
+                "success_state": {
+                    "type": "string"
+                }
+            }
+        },
+        "Preconditions": {
+            "type": "object",
+            "properties": {
+                "account": {
+                    "type": "object",
+                    "properties": {
+                        "state": {
+                            "enum": [
+                                "logged_in",
+                                "logged_out",
+                                "any"
+                            ]
+                        },
+                        "user_type": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "device": {
+                    "type": "object",
+                    "properties": {
+                        "network": {
+                            "enum": [
+                                "wifi",
+                                "4g",
+                                "5g",
+                                "offline",
+                                "any"
+                            ]
+                        },
+                        "region": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "app": {
+                    "type": "object",
+                    "properties": {
+                        "install_state": {
+                            "enum": [
+                                "installed",
+                                "not_installed",
+                                "any"
+                            ]
+                        },
+                        "cold_start": {
+                            "type": "boolean"
+                        }
+                    }
+                },
+                "custom": {
+                    "type": "object"
+                }
+            }
+        },
+        "Step": {
+            "type": "object",
+            "required": [
+                "order",
+                "action"
+            ],
+            "properties": {
+                "order": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "action": {
+                    "type": "string"
+                },
+                "expected": {
+                    "type": "string"
+                }
+            }
+        },
+        "Assertions": {
+            "type": "object",
+            "required": [
+                "ui"
+            ],
+            "properties": {
+                "ui": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "$ref": "#/$defs/UIAssertion"
+                    }
+                },
+                "verifiable": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/VerifiableAssertion"
+                    }
+                }
+            }
+        },
+        "UIAssertion": {
+            "type": "object",
+            "required": [
+                "id",
+                "type",
+                "target"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "type": {
+                    "enum": [
+                        "ui_text_present",
+                        "ui_text_absent",
+                        "ui_toast_present",
+                        "ui_screen_landmark",
+                        "ui_element_state",
+                        "ui_count"
+                    ]
+                },
+                "target": {
+                    "type": "string"
+                },
+                "match": {
+                    "enum": [
+                        "contains",
+                        "equals",
+                        "regex"
+                    ],
+                    "default": "contains"
+                },
+                "must": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "description": {
+                    "type": "string"
+                }
+            }
+        },
+        "VerifiableAssertion": {
+            "type": "object",
+            "required": [
+                "id",
+                "type",
+                "target"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "type": {
+                    "enum": [
+                        "logcat_contains",
+                        "http_api",
+                        "backend_state",
+                        "analytics_event"
+                    ]
+                },
+                "target": {
+                    "type": "string"
+                },
+                "expected": {
+                    "type": "string"
+                },
+                "must": {
+                    "type": "boolean",
+                    "default": false
+                }
+            }
+        },
+        "Guards": {
+            "type": "object",
+            "properties": {
+                "forbidden": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "safety_mode": {
+                    "enum": [
+                        "strict",
+                        "normal",
+                        "permissive"
+                    ],
+                    "default": "strict"
+                }
+            }
+        },
+        "Budget": {
+            "type": "object",
+            "properties": {
+                "max_steps": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "default": 40
+                },
+                "timeout_sec": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "default": 180
+                },
+                "retries": {
+                    "type": "object",
+                    "properties": {
+                        "max_attempts": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "default": 2
+                        },
+                        "retry_on": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "backoff_sec": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "default": 3
+                        }
+                    }
+                }
+            }
+        },
+        "Evidence": {
+            "type": "object",
+            "properties": {
+                "required": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/EvidenceItem"
+                    }
+                },
+                "optional": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/$defs/EvidenceItem"
+                    }
+                }
+            }
+        },
+        "EvidenceItem": {
+            "type": "object",
+            "required": [
+                "type"
+            ],
+            "properties": {
+                "type": {
+                    "enum": [
+                        "screenshot_final",
+                        "screenshot_on_assertions",
+                        "screenshot_each_step",
+                        "logcat_tail",
+                        "ui_tree_dump",
+                        "screen_recording"
+                    ]
+                },
+                "config": {
+                    "type": "object"
+                }
+            }
+        }
+    }
+}

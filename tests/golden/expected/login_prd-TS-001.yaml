@@ -1,0 +1,52 @@
+version: "0.1"
+id: "login_prd-TS-001"
+title: "用户进入登录页面"
+source:
+  - doc_id: "login_prd"
+    loc: "H2: 登录流程 > H3: 主流程 / P1"
+goal:
+  user_intent: "进入登录页面"
+  success_state: "页面显示登录标题和手机号输入框"
+preconditions:
+  account:
+    state: "logged_out"
+  device:
+    network: "any"
+  app:
+    install_state: "installed"
+    cold_start: true
+assertions:
+  ui:
+    - id: "A1"
+      type: "ui_text_present"
+      target: "登录"
+      match: "contains"
+      must: true
+    - id: "A2"
+      type: "ui_text_present"
+      target: "手机号"
+      match: "contains"
+      must: true
+  verifiable: []
+guards:
+  forbidden:
+    - "real_payment"
+    - "account_deletion"
+    - "unbind_bankcard"
+    - "send_message"
+    - "submit_sensitive_form"
+  safety_mode: "strict"
+budget:
+  max_steps: 40
+  timeout_sec: 180
+  retries:
+    max_attempts: 2
+    retry_on: ["timeout", "blocked_by_popup"]
+    backoff_sec: 3
+evidence:
+  required:
+    - type: "screenshot_final"
+    - type: "screenshot_on_assertions"
+  optional: []
+tags: ["login", "p0"]
+notes: {}
