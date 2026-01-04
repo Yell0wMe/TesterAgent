@@ -2,12 +2,21 @@
 
 # 🤖 TesterAgent
 
-**文档驱动的手机端自动化测试平台**
+**Industrial-Grade Document-to-Agent Test Automation Platform**
 
-将自然语言 PRD/设计文档自动转换为结构化测试规格，编译为智能体可执行任务，并产出可解释的测试报告。
+*文档驱动的移动端智能自平衡测试平台*
 
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[特性](#✨-特性) • [架构](#🏗️-核心架构) • [Web 控制台](#🖥️-web-控制台) • [快速开始](#🚀-快速开始) • [Roadmap](#🗺️-roadmap)
+
+---
+
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg?style=flat-square)](https://www.python.org/downloads/)
+[![Next.js 14](https://img.shields.io/badge/Next.js-14-black.svg?style=flat-square)](https://nextjs.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688.svg?style=flat-square)](https://fastapi.tiangolo.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
+
+**让需求文档直接变成测试结果。**  
+TesterAgent 将自然语言 PRD 自动转化为结构化测试规格，通过智能体(Agent)在真实设备上执行，并产出具有完整证据链的测试报告。
 
 </div>
 
@@ -15,381 +24,140 @@
 
 ## ✨ 特性
 
-- 🔄 **文档即用例** — 直接从 PRD/设计文档提取可测试需求
-- 📋 **结构化输出** — 生成标准 TestSpec YAML，支持版本控制
-- 🎯 **可执行规格** — 编译为 PhoneAgent 可执行的 Task Bundle
-- 🛡️ **安全机制** — 内置 Guards 禁区 + Take_over 人工接管
-- 📊 **可解释判定** — 不信"AI 说完成"，只信证据链判定
-- 🔗 **完整追溯** — 每条断言都有证据，每个结果都可复现
+### 1. � 文档即用例 (Document-as-Code)
+不再需要手动编写测试脚本。直接喂入 Markdown/PDF 格式的 PRD，系统自动挖掘测试点并生成标准化的 `TestSpec`。
+
+### 2. 🧠 智能体驱动执行 (Agent-Led Execution)
+基于大语言模型的自适应测试引擎。不需要定位符 (Selectors)，不需要固定的等待逻辑，Agent 像人类一样理解屏幕并完成目标。
+
+### 3. 🛡️ 工业级安全防护 (Production-Ready Safety)
+- **Guards 禁区**: 自动识别并限制高危动作（支付、删号）。
+- **Human-in-the-loop**: 关键链路（如 2FA）自动触发人工接管请求。
+
+### 4. 📊 证据链判定 (Evidence-Based Verdict)
+拒绝“黑盒判定”。每一项断言 (Assertion) 都必须关联具体的 OCR/图像证据，确保测试结果 100% 可追溯。
+
+### 5. 🖥️ 全功能 Web 控制台
+现代化的管理界面，支持设备实时投屏 (Live View)、任务流水线监控、历史记录深度回溯。
 
 ---
 
-## 🏗️ 架构
+## 🏗️ 核心架构
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                              TesterAgent                                    │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   PRD/文档    ──►   TestSpec    ──►   Task Bundle    ──►   Report          │
-│                                                                             │
-│   ┌─────────┐      ┌──────────┐      ┌─────────────┐      ┌───────────┐    │
-│   │         │      │          │      │             │      │           │    │
-│   │ doc2spec│ ──►  │   t2p    │ ──►  │   runner    │ ──►  │  verdict  │    │
-│   │         │      │          │      │   + judge   │      │  + report │    │
-│   │ 第1层   │      │  第2层   │      │    第3层    │      │           │    │
-│   └─────────┘      └──────────┘      └─────────────┘      └───────────┘    │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+TesterAgent 采用三层管道架构，确保从需求到执行的每一步都是确定且可配置的。
+
+```mermaid
+graph LR
+    subgraph "Phase 1: Analysis"
+    Doc[PRD / MD] --> D2S[doc2spec]
+    D2S --> TS[TestSpec YAML]
+    end
+
+    subgraph "Phase 2: Compilation"
+    TS --> T2P[t2p Compiler]
+    T2P --> TB[Task Bundle]
+    end
+
+    subgraph "Phase 3: Execution"
+    TB --> Runner[Runner & Judge]
+    Runner --> Evidence[Evidence Chain]
+    Evidence --> Verdict[Verified Report]
+    end
+
+    style D2S fill:#f9f,stroke:#333,stroke-width:2px
+    style T2P fill:#bbf,stroke:#333,stroke-width:2px
+    style Runner fill:#bfb,stroke:#333,stroke-width:2px
 ```
 
-| 层级 | 工具 | 输入 | 输出 |
-|------|------|------|------|
-| **第 1 层** | `doc2spec` | PRD/Markdown 文档 | TestSpec YAML |
-| **第 2 层** | `t2p` | TestSpec YAML | Task Bundle |
-| **第 3 层** | `runner` | Task Bundle | Evidence + Verdict + Report |
+---
+
+## 🖥️ Web 控制台
+
+**TesterAgent 提供了一个极致简约且高级的 Web 管理后台。**
+
+> [!TIP]
+> 推荐通过 Web 控制台管理大规模并发任务。
+
+- **实时投屏**: 毫秒级感知的设备屏幕镜像，实时查看 Agent 操作。
+- **任务流水线**: 编译 -> 运行 -> 判定 -> 报告，全流程可视化。
+- **设备中心**: 接入 ADB/HDC 物理设备，一键锁定/解锁。
+- **接管弹窗**: 当 Agent 遇到登录、支付等特殊节点时，前端自动弹出交互请求。
 
 ---
 
 ## 🚀 快速开始
 
-### 安装
+### 环境依赖
+- Python 3.10+
+- Node.js 18+ (用于 Web Console)
+- ADB / HDC 环境 (用于真机测试)
 
+### 1. 安装后端
 ```bash
-# 克隆项目
 git clone https://github.com/your-org/TesterAgent.git
 cd TesterAgent
-
-# 创建虚拟环境
 python3 -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
-
-# 安装依赖
+source .venv/bin/activate
 pip install -e ".[dev,zhipu]"
 
-# 配置 API Key（使用智谱 AI）
+# 配置环境变量
 cp .env.example .env
-# 编辑 .env 填入 ZHIPU_API_KEY
+# 填写 ZHIPU_API_KEY
 ```
 
-### 端到端示例
-
+### 2. 安装并启动前端
 ```bash
-# 1️⃣ 文档 → TestSpec
-doc2spec compile examples/sample_prd.md -o out/
+cd web
+npm install
+npm run dev
+```
 
-# 2️⃣ TestSpec → Task Bundle
-t2p compile out/specs/ -o bundles/
+### 3. 端到端 CLI 流程
+```bash
+# 从文档生成规格
+doc2spec compile examples/wechat_prd.md -o out/
 
-# 3️⃣ 执行 + 判定 + 报告
-runner batch bundles/ --mock
+# 编译为智能体任务
+t2p compile out/specs/wechat_prd-TS-001.yaml -o bundles/
 
-# 查看报告
-open runs/report/report.html
+# 在物理设备上运行 (指定设备 ID)
+runner run bundles/wechat_prd-TS-001_bundle/ --device "YOUR_ADB_ID"
 ```
 
 ---
 
-## 📦 第 1 层：Doc2Spec
+## 📂 核心组件说明
 
-**将自然语言文档转换为结构化 TestSpec。**
-
-### 命令
-
-```bash
-# 编译文档（使用真实 LLM）
-doc2spec compile your_prd.md -o out/
-
-# 编译文档（Mock 模式，用于调试）
-doc2spec compile your_prd.md --dummy -o out/
-
-# 校验 TestSpec
-doc2spec lint out/specs/
-
-# 导出 JSON 格式
-doc2spec export-json out/specs/
-```
-
-### 输出结构
-
-```
-out/
-├── specs/
-│   ├── PRD-TS-001.yaml    # 生成的 TestSpec
-│   ├── PRD-TS-002.yaml
-│   └── ...
-└── index.json             # 追溯索引
-```
-
-### TestSpec 示例
-
-```yaml
-version: '0.1'
-id: PRD-TS-001
-title: 用户登录后进入首页
-
-source:
-  - doc_id: PRD_v1.md
-    loc: 'H2: 用户登录 > P3'
-
-goal:
-  user_intent: 完成手机号+验证码登录
-  success_state: 进入首页且显示用户信息
-
-preconditions:
-  account:
-    state: logged_out
-  device:
-    network: wifi
-  app:
-    cold_start: true
-
-assertions:
-  ui:
-    - id: A1
-      type: ui_text_present
-      target: 首页
-      must: true
-    - id: A2
-      type: ui_text_present
-      target: 我的
-      must: true
-
-guards:
-  forbidden:
-    - real_payment
-    - account_deletion
-  safety_mode: strict
-
-budget:
-  max_steps: 40
-  timeout_sec: 180
-
-evidence:
-  required:
-    - type: screenshot_final
-    - type: screenshot_on_assertions
-```
-
----
-
-## 🔧 第 2 层：T2P Compiler
-
-**将 TestSpec 编译为 PhoneAgent 可执行的 Task Bundle。**
-
-### 命令
-
-```bash
-# 编译单个 TestSpec
-t2p compile out/specs/PRD-TS-001.yaml -o bundles/
-
-# 批量编译
-t2p compile out/specs/ -o bundles/
-```
-
-### Task Bundle 结构
-
-```
-bundles/PRD-TS-001_bundle/
-├── task.json              # 任务配置（AgentConfig）
-├── system_prompt.txt      # 系统提示词（测试员模式）
-├── user_task_prompt.txt   # 用户任务描述
-├── policy.json            # 策略配置（Guards/Takeover/Retry）
-├── observation_spec.json  # 观察任务规格（断言→证据映射）
-└── compile_report.json    # 编译诊断报告
-```
-
-### 核心功能
-
-| 模块 | 功能 |
-|------|------|
-| **PromptFactory** | 生成测试员模式 prompt（步步自检、保守策略） |
-| **GuardWeaver** | 编译 Guards 禁区（支付/删号/解绑） |
-| **TakeoverPlanner** | 规划人工接管点（验证码/登录/2FA） |
-| **ObservationCompiler** | 编译断言为可判定的证据采集任务 |
-
----
-
-## ▶️ 第 3 层：Runner + Judge + Report
-
-**执行任务、采集证据、判定断言、生成报告。**
-
-### 命令
-
-```bash
-# 执行单个任务
-runner run bundles/PRD-TS-001_bundle/ --mock
-
-# 批量执行
-runner batch bundles/ --mock --parallel 2
-
-# 单独判定
-runner judge runs/20260104_xxx/
-
-# 生成报告
-runner report runs/ -o report/
-```
-
-### Run Artifact 结构
-
-```
-runs/{run_id}/
-├── meta.json              # 运行元数据
-├── steps.jsonl            # 步骤记录（每步一行 JSON）
-├── evidence/
-│   └── screenshots/
-│       ├── step_000.png
-│       ├── step_001.png
-│       └── final.png
-├── judge/
-│   └── verdict.json       # 判定结果（可解释）
-└── report/
-    ├── report.json        # 结构化报告
-    └── report.html        # 可视化报告
-```
-
-### Verdict 示例
-
-```json
-{
-  "case_id": "PRD-TS-001",
-  "run_id": "20260104_161201_xxx",
-  "status": "PASS",
-  "summary": "2 通过, 0 失败",
-  "assertions": [
-    {
-      "id": "CA_001",
-      "status": "PASS",
-      "evidence": "evidence/screenshots/final.png",
-      "why": "OCR 命中 '首页'"
-    },
-    {
-      "id": "CA_002",
-      "status": "PASS",
-      "evidence": "evidence/screenshots/final.png",
-      "why": "OCR 命中 '我的'"
-    }
-  ]
-}
-```
-
----
-
-## ⚙️ 配置
-
-### 环境变量
-
-| 变量名 | 说明 | 默认值 |
-|--------|------|--------|
-| `ZHIPU_API_KEY` | 智谱 AI API 密钥 | - |
-| `DOC2SPEC_LLM_MODEL` | 模型名称 | `glm-4` |
-| `DOC2SPEC_TEMPERATURE` | 温度参数 | `0.1` |
-| `DOC2SPEC_MAX_TOKENS` | 最大 Token 数 | `4096` |
-| `DOC2SPEC_OUTPUT_DIR` | 输出目录 | `out` |
-
-### .env 配置
-
-```bash
-# 复制示例配置
-cp .env.example .env
-
-# 编辑配置
-ZHIPU_API_KEY=your-api-key-here
-DOC2SPEC_LLM_MODEL=glm-4
-DOC2SPEC_TEMPERATURE=0.1
-```
-
----
-
-## 📁 项目结构
-
-```
-TesterAgent/
-├── src/
-│   ├── doc2spec/              # 第 1 层：Doc → TestSpec
-│   │   ├── cli.py             # CLI 入口
-│   │   ├── models/            # Pydantic 模型
-│   │   ├── modules/           # 核心模块
-│   │   │   ├── normalize.py   # 文档规范化
-│   │   │   ├── mine.py        # 需求挖掘
-│   │   │   ├── synth.py       # 规格合成
-│   │   │   ├── lint.py        # 校验修复
-│   │   │   └── export.py      # 导出
-│   │   ├── adapters/          # LLM 适配器
-│   │   └── prompts/           # Prompt 模板
-│   │
-│   ├── t2p/                   # 第 2 层：TestSpec → Task Bundle
-│   │   ├── cli.py
-│   │   ├── models/            # Bundle 模型
-│   │   └── compiler/          # 编译器模块
-│   │       ├── parser.py
-│   │       ├── prompt_factory.py
-│   │       ├── guard_weaver.py
-│   │       ├── takeover.py
-│   │       ├── observation.py
-│   │       └── packager.py
-│   │
-│   └── runner/                # 第 3 层：执行 + 判定 + 报告
-│       ├── cli.py
-│       ├── models/            # Artifact/Verdict/Report 模型
-│       ├── executor/          # 执行器
-│       │   ├── runner.py
-│       │   ├── device.py
-│       │   ├── evidence.py
-│       │   └── callbacks.py
-│       ├── judge/             # 判定器
-│       │   ├── judge.py
-│       │   └── engines/
-│       │       └── text.py    # OCR/文本引擎
-│       └── reporter/          # 报告器
-│
-├── schemas/                   # JSON Schema
-├── examples/                  # 示例文档
-├── tests/                     # 测试用例
-├── out/                       # TestSpec 输出
-├── bundles/                   # Task Bundle 输出
-└── runs/                      # 运行结果
-```
-
----
-
-## 🧪 开发
-
-```bash
-# 运行测试
-pytest tests/ -v
-
-# 代码格式化
-black src/ tests/
-
-# Lint 检查
-ruff check src/
-
-# 类型检查
-mypy src/
-```
+| 组件 | 说明 | 核心输出 |
+| :--- | :--- | :--- |
+| **doc2spec** | 需求挖掘与規格合成 | `.yaml` (TestSpec) |
+| **t2p** | 智能体策略编译器 | `Task Bundle` (Prompts + Policies) |
+| **runner** | 执行与证据采集引擎 | `steps.jsonl` + `screenshots/` |
+| **verdict** | 基于证据的原子判定系统 | `verdict.json` (Pass/Fail Reason) |
 
 ---
 
 ## 🗺️ Roadmap
 
-- [x] **v0.1** — 三层架构核心实现
-- [ ] **v0.2** — 真实设备执行（ADB/HDC）
-- [ ] **v0.3** — OCR/VLM 断言引擎
-- [ ] **v0.4** — 回放器 + 可视化调试
-- [ ] **v0.5** — CI/CD 集成（GitHub Actions/Jenkins）
-- [ ] **v1.0** — 生产就绪
+- [x] **v0.1** - 三层架构核心管道 (Baseline)
+- [x] **v0.5** - Next.js Web 控制台与 WebSocket 实时流 (Live View)
+- [x] **v1.0** - 编译逻辑离线程化，支持高并发任务管理
+- [ ] **v1.2** - 接入模型：支持 GPT-4o / Claude 3.5 定位断言
+- [ ] **v1.5** - 自动化测试报告一键 PDF/Excel 导出
+- [ ] **v2.0** - 支持 HarmonyOS / iOS 多平台并行执行
 
 ---
 
-## 📄 License
+## 📄 开源协议
 
-MIT License - 详见 [LICENSE](LICENSE)
+本项目采用 [MIT License](LICENSE) 开源。
 
 ---
 
 <div align="center">
 
-**Built with ❤️ for QA Engineers**
+**[官方文档](docs/intro.md) | [贡献指南](CONTRIBUTING.md) | [联系我们](mailto:hwangshuaige@gmail.com)**
+
+Built with ⚡ by Sharon & TesterAgent Team
 
 </div>
