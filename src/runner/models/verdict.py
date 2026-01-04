@@ -23,9 +23,12 @@ class AssertionResult(BaseModel):
     original_id: str | None = None
     must: bool = True
     status: VerdictStatus
+    expected: str | None = None  # 期望条件
+    actual: str | None = None    # 实际观察
     evidence: str | None = None  # 截图路径
     why: str  # 可解释原因
     confidence: float = Field(default=1.0, ge=0.0, le=1.0)
+
 
 
 class VerdictMeta(BaseModel):

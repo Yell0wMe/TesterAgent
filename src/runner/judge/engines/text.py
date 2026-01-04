@@ -60,34 +60,120 @@ class TextEngine(AssertionEngine):
     ) -> AssertionResult:
         """评估文本断言"""
         
-        # 获取 OCR 结果
-        ocr_text = self._get_ocr_text(evidence_path)
-        
-        # 根据断言类型判定
-        if assertion_type == "ocr_text_contains":
+        if self.mock:
+            # Mock 模式：使用传统 OCR 文本匹配
+            ocr_text = self._get_mock_ocr_text()
             passed = target in ocr_text
+            expected = target
+            actual = "Mock OCR 结果"
             why = f"OCR 命中 '{target}'" if passed else f"OCR 未找到 '{target}'"
-            
-        elif assertion_type == "ocr_text_not_contains":
-            passed = target not in ocr_text
-            why = f"OCR 未包含 '{target}'（期望）" if passed else f"OCR 意外包含 '{target}'"
-            
-        elif assertion_type == "ocr_text_equals":
-            passed = ocr_text.strip() == target.strip()
-            why = f"OCR 完全匹配 '{target}'" if passed else f"OCR 不匹配: '{ocr_text}' != '{target}'"
-            
         else:
-            passed = False
-            why = f"不支持的断言类型: {assertion_type}"
+            # 真实模式：使用 VLM 语义验证
+            passed, expected, actual, why = self._evaluate_via_vlm(target, evidence_path)
         
         return AssertionResult(
             id=assertion_id,
             must=must,
             status=VerdictStatus.PASS if passed else VerdictStatus.FAIL,
+            expected=expected,
+            actual=actual,
             evidence=evidence_path,
             why=why,
             confidence=1.0 if self.mock else 0.9
         )
+    
+    def _evaluate_via_vlm(self, assertion_description: str, evidence_path: str) -> tuple[bool, str, str, str]:
+
+        """使用 VLM 语义验证断言"""
+        try:
+            import os
+            import base64
+            from zhipuai import ZhipuAI
+            
+            if not evidence_path or not os.path.exists(evidence_path):
+                return False, "", "", f"证据文件不存在: {evidence_path}"
+            
+            api_key = self.api_key or os.getenv("ZHIPU_API_KEY")
+            if not api_key:
+                return False, "", "", "未配置 ZHIPU_API_KEY"
+            
+            client = ZhipuAI(api_key=api_key)
+            
+            with open(evidence_path, "rb") as f:
+                img_b64 = base64.b64encode(f.read()).decode("utf-8")
+            
+            mime_type = "image/png" if evidence_path.lower().endswith(".png") else "image/jpeg"
+            data_uri = f"data:{mime_type};base64,{img_b64}"
+            
+            prompt = f"""你是一个移动端UI测试断言验证器。请认真分析截图，判断以下断言条件是否满足。
+
+【期望条件】
+{assertion_description}
+
+【验证步骤】
+1. 仔细观察截图中的所有UI元素、文字、状态
+2. 理解断言描述的期望情况
+3. 判断截图内容是否满足期望条件
+4. 注意：只要截图中能体现期望条件描述的情况即可判为通过
+
+【输出格式】（严格按此格式，每项一行）
+结果: PASS 或 FAIL
+期望: <断言期望看到的内容，用简短一句话描述>
+实际: <截图中实际观察到的相关内容>
+说明: <判定理由>"""
+
+            print(f"[Judge] 评估断言: {assertion_description}")
+            
+            response = client.chat.completions.create(
+                model="glm-4v-flash",
+                messages=[
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "text", "text": prompt},
+                            {"type": "image_url", "image_url": {"url": data_uri}}
+                        ]
+                    }
+                ]
+            )
+            
+            result_text = response.choices[0].message.content.strip()
+            print(f"[Judge] VLM 响应:\n{result_text}")
+            
+            # 解析结果
+            lines = result_text.split("\n")
+            passed = False
+            expected = assertion_description
+            actual = ""
+            why = ""
+            
+            for line in lines:
+                line = line.strip()
+                if line.startswith("结果:") or line.startswith("结果："):
+                    passed = "PASS" in line.upper()
+                elif line.startswith("期望:") or line.startswith("期望："):
+                    expected = line.split(":", 1)[-1].strip() if ":" in line else line.split("：", 1)[-1].strip()
+                elif line.startswith("实际:") or line.startswith("实际："):
+                    actual = line.split(":", 1)[-1].strip() if ":" in line else line.split("：", 1)[-1].strip()
+                elif line.startswith("说明:") or line.startswith("说明："):
+                    why = line.split(":", 1)[-1].strip() if ":" in line else line.split("：", 1)[-1].strip()
+            
+            # 如果没解析到实际，用完整响应
+            if not actual:
+                actual = result_text.split("\n")[-1] if result_text else "无法解析"
+            if not why:
+                why = f"{'通过' if passed else '失败'}: {actual}"
+            
+            return passed, expected, actual, why
+
+            
+        except Exception as e:
+            print(f"[Judge] VLM 评估失败: {e}")
+            import traceback
+            traceback.print_exc()
+            return False, f"VLM 评估失败: {str(e)}"
+
+
     
     def _get_ocr_text(self, evidence_path: str) -> str:
         """
@@ -113,6 +199,11 @@ class TextEngine(AssertionEngine):
             import base64
             from zhipuai import ZhipuAI
             
+            # 检查文件是否存在
+            if not evidence_path or not os.path.exists(evidence_path):
+                print(f"[警告] OCR 证据文件不存在: {evidence_path}")
+                return ""
+            
             api_key = self.api_key or os.getenv("ZHIPU_API_KEY")
             if not api_key:
                 print("[警告] 未配置 ZHIPU_API_KEY，OCR 无法通过 VLM 执行")
@@ -120,27 +211,46 @@ class TextEngine(AssertionEngine):
             
             client = ZhipuAI(api_key=api_key)
             
+            # 读取并编码图片
             with open(evidence_path, "rb") as f:
                 img_b64 = base64.b64encode(f.read()).decode("utf-8")
+            
+            # 判断图片格式
+            if evidence_path.lower().endswith(".png"):
+                mime_type = "image/png"
+            elif evidence_path.lower().endswith((".jpg", ".jpeg")):
+                mime_type = "image/jpeg"
+            else:
+                mime_type = "image/png"
+            
+            # 使用正确的 data URI 格式
+            data_uri = f"data:{mime_type};base64,{img_b64}"
+            
+            print(f"[OCR] 正在分析截图: {evidence_path}")
                 
             response = client.chat.completions.create(
-                model="glm-4v",
+                model="glm-4v-flash",
                 messages=[
                     {
                         "role": "user",
                         "content": [
-                            {"type": "text", "text": "请识别图中的所有文字，按顺序输出，不要添加任何解释。"},
-                            {"type": "image_url", "image_url": {"url": img_b64}}
+                            {"type": "text", "text": "请识别图片中的所有可见文字，直接输出文字内容，每行一个，不要添加任何解释、标点或格式。"},
+                            {"type": "image_url", "image_url": {"url": data_uri}}
                         ]
                     }
                 ]
             )
             
-            return response.choices[0].message.content
+            ocr_text = response.choices[0].message.content
+            print(f"[OCR] 识别结果: {ocr_text[:100]}..." if len(ocr_text) > 100 else f"[OCR] 识别结果: {ocr_text}")
+            return ocr_text
             
         except Exception as e:
             print(f"[警告] VLM OCR 失败: {e}")
+            import traceback
+            traceback.print_exc()
             return ""
+
     
     def _get_mock_ocr_text(self) -> str:
         """获取模拟 OCR 文本"""

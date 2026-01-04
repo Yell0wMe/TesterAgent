@@ -272,6 +272,27 @@ class TaskManager:
             # Check if it was stopped
             final_status = self._runs[run_id].get("status")
             if final_status != "stopped":
+                # Run Judge to generate verdict
+                await self._log(run_id, "正在生成测试判定报告...")
+                try:
+                    from runner.judge.judge import Judge
+                    judge = Judge(mock=False, api_key=api_key or "")
+                    run_dir = os.path.join("runs", run_id)
+                    # Load observation_spec from bundle if exists
+                    obs_spec = None
+                    import glob
+                    bundle_pattern = os.path.join(run_dir, "bundle_out", "*", "observation_spec.json")
+                    obs_files = glob.glob(bundle_pattern)
+                    if obs_files:
+                        from t2p.models.observation import ObservationSpec
+                        with open(obs_files[0], "r", encoding="utf-8") as f:
+                            obs_spec = ObservationSpec.model_validate_json(f.read())
+                    verdict = judge.judge(run_dir, observation_spec=obs_spec)
+                    await self._log(run_id, f"测试判定完成: {verdict.status.value} ({verdict.summary})")
+                except Exception as e:
+                    logger.warning(f"Judge failed for {run_id}: {e}")
+                    await self._log(run_id, f"判定生成失败: {str(e)}")
+                
                 # Update meta with artifact info
                 self._runs[run_id]["artifact_path"] = str(artifact.artifact_dir)
                 await self._update_status(run_id, "done")

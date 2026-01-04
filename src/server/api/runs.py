@@ -52,6 +52,7 @@ async def get_run(run_id: str):
 @router.get("/{run_id}/artifacts")
 async def get_run_artifacts(run_id: str):
     """获取任务产物清单"""
+    run_dir = os.path.join("runs", run_id)
     # Simple recursive walk or just evidence dir
     evidence_dir = os.path.join(run_dir, "evidence")
     artifacts = []
@@ -117,3 +118,54 @@ async def download_run(run_id: str):
     zip_name = f"/tmp/{run_id}"
     shutil.make_archive(zip_name, 'zip', run_dir)
     return FileResponse(f"{zip_name}.zip", filename=f"run_{run_id}.zip")
+
+@router.get("/{run_id}/verbose-log")
+async def get_verbose_log(run_id: str):
+    """获取完整的 Agent 执行日志"""
+    run_dir = os.path.join("runs", run_id)
+    log_path = os.path.join(run_dir, "agent_verbose.log")
+    
+    if not os.path.exists(log_path):
+        raise HTTPException(status_code=404, detail="Verbose log not found")
+    
+    with open(log_path, "r", encoding="utf-8") as f:
+        content = f.read()
+    return {"log": content}
+
+@router.get("/{run_id}/testcase")
+async def get_testcase(run_id: str):
+    """获取测试用例配置 (task.json)"""
+    import json
+    import glob
+    run_dir = os.path.join("runs", run_id)
+    
+    # Find task.json in bundle_out/*/task.json
+    pattern = os.path.join(run_dir, "bundle_out", "*", "task.json")
+    matches = glob.glob(pattern)
+    
+    if not matches:
+        raise HTTPException(status_code=404, detail="Testcase not found")
+    
+    with open(matches[0], "r", encoding="utf-8") as f:
+        testcase = json.load(f)
+    return testcase
+
+@router.get("/{run_id}/report")
+async def get_report(run_id: str):
+    """获取测试判定报告 (verdict.json)"""
+    import json
+    run_dir = os.path.join("runs", run_id)
+    
+    # Check judge/verdict.json first
+    verdict_path = os.path.join(run_dir, "judge", "verdict.json")
+    if os.path.exists(verdict_path):
+        with open(verdict_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    
+    # Fallback to report/report.json
+    report_path = os.path.join(run_dir, "report", "report.json")
+    if os.path.exists(report_path):
+        with open(report_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+            
+    raise HTTPException(status_code=404, detail="Report not found")
