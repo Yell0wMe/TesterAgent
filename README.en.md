@@ -6,7 +6,7 @@
 
 **Test Docs as Code, Like Magic! ✨**
 
-*The Intelligent Automation Platform turning Requirements into Test Reports*
+*The Intelligent Automation Platform turning Requirements into Test Reports (Android & Web)*
 
 <p align="center">
   <a href="README.md">简体中文 🇨🇳</a> •
@@ -46,11 +46,15 @@ No more coding test cases line by line. The system reads your product documentat
 **"Sees" the screen like a human.**
 Abandon fragile `id` or `xpath` selectors. TesterAgent uses advanced Vision-Language Models (VLM) to analyze screen screenshots in real-time, locating buttons and icons by visual features. Even if the UI layout changes, as long as a user can see it, the Agent can find it.
 
-### 3. 🛡️ Safety Guardrails
+### 3. 🌐 Multi-Platform Support
+**Coverage for both Mobile and Web.**
+Whether it's traditional Android physical devices or modern Web applications, TesterAgent handles both with ease. It automatically manages Web-specific challenges like logins, redirects, and multi-window navigation.
+
+### 4. 🛡️ Safety Guardrails
 **Smart Risk Control.**
 Built-in strict safety policies. For high-risk operations like real payments, account deletion, or privacy authorization, the Agent automatically recognizes and triggers protection mechanisms (skipping or asking for manual confirmation), ensuring your production environment is absolutely safe.
 
-### 4. 📊 Visual Evidence
+### 5. 📊 Visual Evidence
 **Transparent Process, Truth in Pictures.**
 Every click, every input, and every assertion is automatically captured with screenshots and logs. Test reports are no longer just `Pass/Fail`, but complete visual stories, leaving bugs nowhere to hide.
 
@@ -75,7 +79,7 @@ graph LR
 
     subgraph "Phase 3: Execution & Observation"
     Bundle -->|Load| Runner[🤖 Execution Agent]
-    Runner <-->|Visual Interaction| Phone[📱 Mobile Device]
+    Runner <-->|Visual Interaction| Device[📱 Android Device / 💻 Web Browser]
     Runner -->|Verdict| Judge[⚖️ Referee]
     end
 
@@ -105,9 +109,10 @@ The most exciting part. The **Multimodal Agent (VLM Agent)** takes control.
 
 While TesterAgent is powerful, the current version has some limitations:
 
-1.  **Android Only**: Currently supports only Android devices (via ADB). iOS is not supported.
-2.  **Execution Speed**: Due to heavy VLM usage, inference takes about 2-5 seconds per step, making it slower than native Appium/Espresso scripts.
-3.  **Verification Scope**: Primarily supports visual UI verification (text/icon). Database state or API response verification is not yet supported.
+1.  **Android Only for Mobile**: Currently supports only Android devices (via ADB) for mobile testing. iOS is not yet supported.
+2.  **Web Support**: Supports major browsers (via Playwright). Human takeover might be needed for extremely complex Shadow DOM or MFA scenarios.
+3.  **Execution Speed**: Due to heavy VLM usage, inference takes about 2-5 seconds per step, making it slower than native automation scripts.
+4.  **Verification Scope**: Primarily supports visual UI verification (text/icon). Database state or API response verification is not yet supported.
 4.  **Cost Awareness**: Heavy visual analysis and mining consume significant LLM tokens. Please monitor your API usage quota.
     *   **Cost Estimate**: A standard test case with 10 steps consumes approx. **30k-50k Tokens** (including multimodal vision input). Based on current VLM pricing (~¥10/1M Tokens), the cost is approx. **¥0.3 - ¥0.5 RMB per run** (~$0.04 - $0.07 USD).
 5.  **Hallucination Risk**: On extremely cluttered or non-standard UIs, VLM may occasionally misinterpret elements. Human review is recommended for critical paths.
@@ -119,7 +124,8 @@ While TesterAgent is powerful, the current version has some limitations:
 ### Prerequisites
 - **Python 3.10+** (Backend Core)
 - **Node.js 18+** (Web Console)
-- **Android Device** (Real device or Emulator with ADB enabled)
+- **Android Environment** (Real device or Emulator with ADB enabled)
+- **Browser Environment** (Requires Playwright dependencies)
 
 ### 1. Start the Brain (Backend)
 ```bash
@@ -131,8 +137,9 @@ cd TesterAgent
 python3 -m venv .venv
 source .venv/bin/activate
 
-# Install dependencies (with Zhipu AI support)
+# Install dependencies (with Zhipu AI & Web drivers)
 pip install -e ".[dev,zhipu]"
+playwright install  # Install browser binaries
 
 # Configure API Key
 cp .env.example .env

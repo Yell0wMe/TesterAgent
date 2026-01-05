@@ -6,7 +6,7 @@
 
 **文档即测试，像魔法一样！✨**
 
-*让需求文档自动变身测试报告的智能自动化平台*
+*让需求文档自动变身测试报告的智能自动化平台 (Android & Web)*
 
 <p align="center">
   <a href="README.md">简体中文 🇨🇳</a> •
@@ -46,11 +46,15 @@ TesterAgent 将改变这一切！你只需要提供一份 **PRD 文档**（Word,
 **像人类一样"看"屏幕。**
 抛弃脆弱的 `id` 或 `xpath` 选择器。TesterAgent 使用先进的多模态模型 (VLM) 实时分析屏幕截图，通过视觉特征定位按钮和图标。即使 UI 布局调整，只要用户看得到，它就能找得到。
 
-### 3. 🛡️ 安全围栏 (Safety Guardrails)
+### 3. 🌐 多端支持 (Multi-Platform)
+**移动端与 Web 端双覆盖。**
+无论是传统的 Android 安卓真机，还是现代化的 Web 网页应用，TesterAgent 都能自如应对。它能自动处理 Web 端的登录跳转、多窗口切换等复杂场景。
+
+### 4. 🛡️ 安全围栏 (Safety Guardrails)
 **智能风控，安全无忧。**
 内置严格的安全策略引擎。涉及真实支付、账号注销、隐私授权等高风险操作时，Agent 会自动识别并触发保护机制（自动跳过或请求人工确认），确保生产环境绝对安全。
 
-### 4. 📊 证据链留存 (Visual Evidence)
+### 5. 📊 证据链留存 (Visual Evidence)
 **过程透明，有图有真相。**
 每一次点击、每一次输入、每一次断言判定，系统都会自动截取屏幕快照并关联日志。测试报告不再是枯燥的 `Pass/Fail`，而是完整的图文故事，让 Bug 无处遁形。
 
@@ -75,7 +79,7 @@ graph LR
 
     subgraph "Phase 3: 执行与观测"
     Bundle -->|加载| Runner[🤖 执行代理]
-    Runner <-->|视觉交互| Phone[📱 移动设备]
+    Runner <-->|视觉交互| Device[📱 安卓真机 / 💻 Web 浏览器]
     Runner -->|判定| Judge[⚖️ 裁判员]
     end
 
@@ -105,9 +109,10 @@ graph LR
 
 虽然 TesterAgent 很强大，但目前版本仍存在以下局限性：
 
-1.  **仅支持 Android**：目前仅适配 Android 设备（通过 ADB 连接），暂不支持 iOS 设备。
-2.  **执行速度**：由于依赖多模态大模型 (VLM) 进行实时视觉分析，单步推断耗时约 2-5 秒，执行速度低于原生 Appium/Espresso 脚本。
-3.  **验证范围**：目前主要支持基于视觉（文本、图标）的 UI 验证。暂不支持数据库状态校验或 API 接口抓包验证。
+1.  **移动端仅支持 Android**：移动端目前仅适配 Android 设备（通过 ADB 连接），暂不支持 iOS 设备。
+2.  **Web 支持**：Web 端支持主流浏览器（基于 Playwright），对于极其复杂的 Shadow DOM 或双重身份验证可能需要人机协助模式。
+3.  **执行速度**：由于依赖多模态大模型 (VLM) 进行实时视觉分析，单步推断耗时约 2-5 秒，执行速度低于原生自动化脚本。
+4.  **验证范围**：目前主要支持基于视觉（文本、图标）的 UI 验证。暂不支持数据库状态校验或 API 接口抓包验证。
 4.  **成本提示**：大量的视觉分析和需求挖掘会消耗较多的 LLM Token，请注意监控 API 使用额度。
     *   **预估计算**：一个包含 10 个步骤的标准测试用例，全流程约消耗 **30k-50k Token**（含多模态图像输入）。按当前主流视觉模型定价（约 ¥10/100万 Token）计算，单次执行成本约 **¥0.3 - ¥0.5 RMB**。
 5.  **幻觉风险**：在极度拥挤或非标准 UI 界面上，VLM 仍可能出现识别错误或幻觉，建议在关键步骤配合人工复核。
@@ -119,7 +124,8 @@ graph LR
 ### 环境准备
 - **Python 3.10+** (后端核心)
 - **Node.js 18+** (Web 控制台)
-- **Android 设备** (真机或模拟器，需开启 ADB 调试)
+- **Android 环境** (真机或模拟器，需开启 ADB 调试)
+- **浏览器环境** (需通过 `playwright install` 安装依赖)
 
 ### 1. 启动大脑 (Backend)
 ```bash
@@ -131,8 +137,9 @@ cd TesterAgent
 python3 -m venv .venv
 source .venv/bin/activate
 
-# 安装依赖 (包含 Zhipu AI 支持)
+# 安装依赖 (包含 Zhipu AI 与 Web 驱动)
 pip install -e ".[dev,zhipu]"
+playwright install  # 安装浏览器驱动
 
 # 配置 API Key
 cp .env.example .env

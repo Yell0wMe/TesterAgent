@@ -6,7 +6,7 @@
 
 **¡Documentos como Tests, como magia! ✨**
 
-*La plataforma de automatización inteligente que convierte requisitos en informes de prueba*
+*La plataforma de automatización inteligente que convierte requisitos en informes de prueba (Android & Web)*
 
 <p align="center">
   <a href="README.md">简体中文 🇨🇳</a> •
@@ -46,11 +46,15 @@ No más escribir código de prueba línea por línea. El sistema lee la document
 **"Ve" la pantalla como un humano.**
 Abandona los selectores frágiles `id` o `xpath`. TesterAgent utiliza Modelos de Visión-Lenguaje (VLM) avanzados para analizar capturas de pantalla en tiempo real, localizando botones e iconos por características visuales. Incluso si el diseño de la interfaz cambia, mientras un usuario pueda verlo, el Agente puede encontrarlo.
 
-### 3. 🛡️ Barreras de Seguridad
+### 3. 🌐 Soporte Multiplataforma
+**Cobertura tanto para Móvil como para Web.**
+Ya sea que se trate de dispositivos físicos Android tradicionales o de aplicaciones Web modernas, TesterAgent maneja ambos con facilidad. Gestiona automáticamente desafíos específicos de la Web como inicios de sesión, redirecciones y navegación en varias ventanas.
+
+### 4. 🛡️ Barreras de Seguridad
 **Control de Riesgos Inteligente.**
 Políticas de seguridad estrictas integradas. Para operaciones de alto riesgo como pagos reales, eliminación de cuentas o autorización de privacidad, el Agente reconoce y activa automáticamente mecanismos de protección (omitir o pedir confirmación manual), asegurando que tu entorno de producción sea absolutamente seguro.
 
-### 4. 📊 Evidencia Visual
+### 5. 📊 Evidencia Visual
 **Proceso Transparente, Verdad en Imágenes.**
 Cada clic, cada entrada y cada aserción se captura automáticamente con capturas de pantalla y registros. Los informes de prueba ya no son solo `Pass/Fail`, sino historias visuales completas, dejando a los errores sin lugar donde esconderse.
 
@@ -75,7 +79,7 @@ graph LR
 
     subgraph "Fase 3: Ejecución y Observación"
     Bundle -->|Cargar| Runner[🤖 Agente Ejecutor]
-    Runner <-->|Interacción Visual| Phone[📱 Móvil]
+    Runner <-->|Interacción Visual| Device[📱 Dispositivo Android / 💻 Navegador Web]
     Runner -->|Veredicto| Judge[⚖️ Árbitro]
     end
 
@@ -105,9 +109,10 @@ La parte más emocionante. El **Agente Multimodal (Agente VLM)** toma el control
 
 Aunque TesterAgent es potente, la versión actual tiene algunas limitaciones:
 
-1.  **Solo Android**: Actualmente solo soporta dispositivos Android (vía ADB). No hay soporte para iOS.
-2.  **Velocidad de Ejecución**: Debido al uso intensivo de VLM, la inferencia toma alrededor de 2-5 segundos por paso, siendo más lento que scripts nativos de Appium/Espresso.
-3.  **Alcance de Verificación**: Principalmente soporta verificación visual de UI (texto/icono). La verificación de estado de base de datos o respuesta de API aún no está soportada.
+1.  **Solo Android para Móviles**: Actualmente solo soporta dispositivos Android (vía ADB) para pruebas móviles. No hay soporte para iOS aún.
+2.  **Soporte Web**: Soporta los navegadores principales (vía Playwright). La intervención humana puede ser necesaria para escenarios de Shadow DOM extremadamente complejos o MFA.
+3.  **Velocidad de Ejecución**: Debido al uso intensivo de VLM, la inferencia toma alrededor de 2-5 segundos por paso, siendo más lento que scripts de automatización nativos.
+4.  **Alcance de Verificación**: Principalmente soporta verificación visual de UI (texto/icono). La verificación de estado de base de datos o respuesta de API aún no está soportada.
 4.  **Conciencia de Costos**: El análisis visual intensivo y la minería consumen tokens LLM significativos. Por favor, monitorea tu cuota de uso de API.
     *   **Estimación de Costos**: Un caso de prueba estándar con 10 pasos consume aprox. **30k-50k Tokens** (incluyendo entrada multimodal). Basado en el precio actual de modelos visuales (~¥10/1M Tokens), el costo es aprox. **¥0.3 - ¥0.5 RMB por ejecución**.
 5.  **Riesgo de Alucinación**: En UIs extremadamente abarrotadas o no estándar, el VLM puede ocasionalmente malinterpretar elementos. Se recomienda revisión humana para rutas críticas.
@@ -119,7 +124,8 @@ Aunque TesterAgent es potente, la versión actual tiene algunas limitaciones:
 ### Prerrequisitos
 - **Python 3.10+** (Núcleo Backend)
 - **Node.js 18+** (Consola Web)
-- **Dispositivo Android** (Dispositivo real o Emulador con ADB habilitado)
+- **Entorno Android** (Dispositivo real o Emulador con ADB habilitado)
+- **Entorno de Navegador** (Requiere dependencias de Playwright)
 
 ### 1. Iniciar el Cerebro (Backend)
 ```bash
@@ -131,8 +137,9 @@ cd TesterAgent
 python3 -m venv .venv
 source .venv/bin/activate
 
-# Instalar dependencias (con soporte Zhipu AI)
+# Instalar dependencias (con Zhipu AI y controladores Web)
 pip install -e ".[dev,zhipu]"
+playwright install  # Instalar binarios del navegador
 
 # Configurar API Key
 cp .env.example .env
