@@ -62,6 +62,8 @@ Jeder Klick, jede Eingabe und jede Zusicherung wird automatisch mit Screenshots 
 
 ## 🛠️ Wie es funktioniert (Deep Dive)
 
+![TesterAgent Architektur](web/public/docs/architecture.png)
+
 Die Magie von TesterAgent liegt in seiner einzigartigen **Drei-Stufen-Pipeline**, die komplexe Testaufgaben in spezialisierte Workflows zerlegt.
 
 ```mermaid

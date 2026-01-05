@@ -62,6 +62,8 @@ Cada clic, cada entrada y cada aserción se captura automáticamente con captura
 
 ## 🛠️ Cómo Funciona (Deep Dive)
 
+![TesterAgent Arquitectura](web/public/docs/architecture.png)
+
 La magia de TesterAgent proviene de su **Tubería de Tres Etapas** única, descomponiendo tareas de prueba complejas en flujos de trabajo especializados manejados por diferentes roles de LLM.
 
 ```mermaid

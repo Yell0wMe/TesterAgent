@@ -62,6 +62,8 @@ TesterAgent 将改变这一切！你只需要提供一份 **PRD 文档**（Word,
 
 ## 🛠️ 它是如何工作的？(Deep Dive)
 
+![TesterAgent Architecture](web/public/docs/architecture.png)
+
 TesterAgent 的魔法源自其独特的**三段式流水线 (Three-Stage Pipeline)** 设计，我们将复杂的测试任务拆解为由于不同专长的大模型协作完成的工序。
 
 ```mermaid

@@ -37,12 +37,20 @@ ENV/
 *.swo
 *~
 
-# 测试
+# 测试与调试
 .pytest_cache/
 .coverage
 htmlcov/
 .tox/
 .nox/
+debug_*.py
+test_web_adapter.py
+test_web_agent_direct.py
+*.png
+!web/public/**/*.png
+!web/app/**/*.png
+!test_web.png
+!test_device_adapter.png
 
 # mypy
 .mypy_cache/
@@ -56,6 +64,7 @@ dmypy.json
 /runs/
 uploads/
 bundles/
+vendor/
 
 # Node.js
 web/node_modules/

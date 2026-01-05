@@ -62,6 +62,8 @@ Every click, every input, and every assertion is automatically captured with scr
 
 ## 🛠️ How It Works (Deep Dive)
 
+![TesterAgent Architecture](web/public/docs/architecture.png)
+
 The magic of TesterAgent comes from its unique **Three-Stage Pipeline**, decomposing complex testing tasks into specialized workflows handled by different LLM roles.
 
 ```mermaid
