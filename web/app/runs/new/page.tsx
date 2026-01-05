@@ -110,39 +110,38 @@ export default function NewRunPage() {
                             <div className="flex-1 relative">
                                 <FolderOpen className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                                 <Input
-                                    placeholder="输入 Bundle 路径，例如: examples/wechat_ts.yaml"
+                                    placeholder="输入 Bundle 路径，或 PRD 文档 URL (http://...)"
                                     value={docId}
                                     onChange={e => setDocId(e.target.value)}
                                     className="pl-9 bg-slate-50 border-slate-200"
                                 />
                             </div>
-                            <label className={`inline-flex items-center gap-2 px-4 h-10 rounded-md text-sm font-medium cursor-pointer transition-colors ${
-                                uploading 
-                                    ? 'bg-slate-100 text-slate-400 cursor-not-allowed' 
+                            <label className={`inline-flex items-center gap-2 px-4 h-10 rounded-md text-sm font-medium cursor-pointer transition-colors ${uploading
+                                    ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
                                     : 'bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 shadow-sm'
-                            }`}>
+                                }`}>
                                 {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
                                 {uploading ? '上传中' : '上传'}
                                 <input
                                     type="file"
                                     className="hidden"
-                                    accept=".md,.txt,.docx,.pdf,.yaml,.yml"
+                                    accept=".md,.txt,.docx,.pdf,.html,.htm,.yaml,.yml"
                                     onChange={handleFileUpload}
                                     disabled={uploading}
                                 />
                             </label>
                         </div>
-                        
+
                         {uploadedFileName && (
                             <div className="flex items-center gap-2 text-sm text-emerald-600 bg-emerald-50 px-3 py-2 rounded-md border border-emerald-100">
                                 <CheckCircle2 className="h-4 w-4" />
                                 已上传: {uploadedFileName}
                             </div>
                         )}
-                        
+
                         <div className="text-xs text-muted-foreground flex items-center gap-1.5">
                             <FileText className="h-3.5 w-3.5" />
-                            支持 .md, .txt, .docx, .pdf, .yaml 等格式
+                            支持 .md, .txt, .docx, .pdf, .html, .yaml 等格式
                         </div>
                     </CardContent>
                 </Card>
@@ -167,19 +166,17 @@ export default function NewRunPage() {
                                 {activeDevices.map(device => (
                                     <div
                                         key={device.id}
-                                        className={`p-3 rounded-lg cursor-pointer flex items-center justify-between border transition-all ${
-                                            selectedDevice === device.id 
-                                                ? 'bg-indigo-50 border-indigo-200 shadow-sm' 
+                                        className={`p-3 rounded-lg cursor-pointer flex items-center justify-between border transition-all ${selectedDevice === device.id
+                                                ? 'bg-indigo-50 border-indigo-200 shadow-sm'
                                                 : 'bg-white border-slate-100 hover:border-slate-200 hover:bg-slate-50'
-                                        }`}
+                                            }`}
                                         onClick={() => setSelectedDevice(device.id)}
                                     >
                                         <div className="flex items-center gap-3">
-                                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                                                selectedDevice === device.id 
-                                                    ? 'bg-indigo-100 text-indigo-600' 
+                                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${selectedDevice === device.id
+                                                    ? 'bg-indigo-100 text-indigo-600'
                                                     : 'bg-slate-100 text-slate-500'
-                                            }`}>
+                                                }`}>
                                                 <Smartphone className="h-5 w-5" />
                                             </div>
                                             <div>
@@ -187,13 +184,12 @@ export default function NewRunPage() {
                                                 <div className="text-xs text-slate-500 font-mono">{device.id}</div>
                                             </div>
                                         </div>
-                                        <Badge 
+                                        <Badge
                                             variant="secondary"
-                                            className={`text-xs ${
-                                                device.status === 'free' 
-                                                    ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-100' 
+                                            className={`text-xs ${device.status === 'free'
+                                                    ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-100'
                                                     : 'bg-amber-100 text-amber-700 hover:bg-amber-100'
-                                            }`}
+                                                }`}
                                         >
                                             {device.status === 'free' ? '空闲' : '使用中'}
                                         </Badge>
@@ -212,10 +208,10 @@ export default function NewRunPage() {
                         <AlertCircle className="h-4 w-4" />
                         {!docId ? '请先选择测试文档' : !selectedDevice ? '请选择一个测试设备' : '准备就绪'}
                     </div>
-                    <Button 
+                    <Button
                         size="lg"
                         className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-200 min-w-[200px]"
-                        onClick={handleCreate} 
+                        onClick={handleCreate}
                         disabled={!canStart}
                     >
                         {loading ? (

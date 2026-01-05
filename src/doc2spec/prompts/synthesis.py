@@ -29,7 +29,9 @@ SYNTHESIS_SYSTEM_PROMPT = """你是一个专业的测试规格生成器。你的
 - ui_toast_present: 出现 Toast 提示
 - ui_screen_landmark: 页面地标
 - ui_element_state: 按钮状态
-- ui_count: 列表项数量"""
+- ui_element_state: 按钮状态
+- ui_count: 列表项数量
+5. **环境转化**：如果输入中包含 `目标应用`，必须将其转化为 `preconditions` 中的 `custom` 指令（如 "启动 京东App"）。"""
 
 
 def get_synthesis_prompt() -> str:
@@ -55,6 +57,8 @@ preconditions:
   app:
     install_state: "installed"
     cold_start: true
+  custom:
+    launch_cmd: "启动 示例App"
 assertions:
   ui:
     - id: "A1"

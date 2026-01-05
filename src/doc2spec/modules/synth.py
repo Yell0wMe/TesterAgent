@@ -299,6 +299,9 @@ class SpecSynthesizer:
         parts = [
             f"需求标题: {item.req_title}",
             f"用户目标: {item.user_goal}",
+            f"目标应用: {item.target_app or '未指定'}",
+            f"目标页面: {item.target_page or '未指定'}",
+            f"环境要求: {item.env_specs or '无特殊要求'}",
             f"成功态 UI: {', '.join(item.success_ui)}",
         ]
         

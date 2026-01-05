@@ -69,7 +69,7 @@ class RequirementMiner:
             logger.info(f"处理文档 {doc.doc_id} 的第 {chunk_idx}/{len(chunks)} 个分块...")
             
             try:
-                items = self._mine_chunk(doc.doc_id, chunk)
+                items = self._mine_chunk(doc.doc_id, doc.title or doc.doc_id, chunk)
                 all_items.extend(items)
             except MiningError as e:
                 logger.error(f"分块 {chunk_idx} 处理失败: {e}")
@@ -123,19 +123,20 @@ class RequirementMiner:
         
         return chunks
     
-    def _mine_chunk(self, doc_id: str, paragraphs: list[Paragraph]) -> list[RequirementItem]:
+    def _mine_chunk(self, doc_id: str, doc_title: str, paragraphs: list[Paragraph]) -> list[RequirementItem]:
         """
         挖掘单个分块的需求
         
         Args:
             doc_id: 文档标识符
+            doc_title: 文档标题
             paragraphs: 段落列表
             
         Returns:
             list[RequirementItem]: 需求条目列表
         """
         # 构建输入文本
-        input_text = self._format_paragraphs(paragraphs)
+        input_text = f"【文档标题/上下文】: {doc_title}\n\n" + self._format_paragraphs(paragraphs)
         
         # 获取 prompt
         prompt = get_mining_prompt(doc_id)
@@ -285,10 +286,19 @@ class RequirementMiner:
         if not success_ui:
             success_ui = ["操作成功"]  # 默认值
         
+        # 确保简单的字符串字段不是列表
+        def ensure_str(val):
+            if isinstance(val, list):
+                return ", ".join([str(v) for v in val])
+            return val
+
         return RequirementItem(
             req_id=data.get("req_id"),
             req_title=data.get("req_title", f"需求 {idx + 1}"),
             user_goal=data.get("user_goal", "完成操作"),
+            target_app=ensure_str(data.get("target_app")),
+            target_page=ensure_str(data.get("target_page")),
+            env_specs=ensure_str(data.get("env_specs")),
             success_ui=success_ui,
             explicit_steps=data.get("explicit_steps", []),
             preconditions=data.get("preconditions", []),

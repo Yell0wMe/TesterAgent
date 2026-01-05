@@ -52,8 +52,9 @@ def get_adapter(use_dummy: bool = False):
 
 
 @app.command()
+@app.command()
 def compile(
-    input_path: Path = typer.Argument(..., help="输入文件或目录路径"),
+    input_str: str = typer.Argument(..., metavar="INPUT", help="输入文件路径、目录或 URL"),
     output: Path = typer.Option(Path("out"), "-o", "--output", help="输出目录"),
     dummy: bool = typer.Option(False, "--dummy", help="使用 Dummy LLM（调试用）"),
     no_llm: bool = typer.Option(False, "--no-llm", help="不使用 LLM，仅做直接映射"),
@@ -62,16 +63,21 @@ def compile(
     """
     编译文档为 TestSpec
     
-    将 Markdown/TXT 文档编译为结构化的 TestSpec YAML 文件。
+    支持格式: Markdown, TXT, DOCX, PDF, HTML, URL
     """
     setup_logging("DEBUG" if verbose else "INFO")
     
-    if not input_path.exists():
-        console.print(f"[red]错误: 路径不存在 {input_path}[/red]")
-        raise typer.Exit(1)
+    is_url = input_str.startswith("http://") or input_str.startswith("https://")
+    input_path = None
+    
+    if not is_url:
+        input_path = Path(input_str)
+        if not input_path.exists():
+            console.print(f"[red]错误: 路径不存在 {input_path}[/red]")
+            raise typer.Exit(1)
     
     console.print(f"[bold blue]Doc2Spec 编译器[/bold blue]")
-    console.print(f"输入: {input_path}")
+    console.print(f"输入: {input_str}")
     console.print(f"输出: {output}")
     console.print()
     
@@ -84,7 +90,10 @@ def compile(
         task = progress.add_task("正在解析文档...", total=None)
         normalizer = Normalizer()
         
-        if input_path.is_file():
+        docs = []
+        if is_url:
+            docs = [normalizer.normalize_url(input_str)]
+        elif input_path.is_file():
             docs = [normalizer.normalize_file(input_path)]
         else:
             docs = normalizer.normalize_directory(input_path)

@@ -212,7 +212,10 @@ class TaskManager:
                 log_callback("警告: Doc2Spec 未配置 API Key，将使用 Dummy 模式")
             
             normalizer = Normalizer()
-            docs = [normalizer.normalize_file(Path(doc_path))]
+            if doc_path.startswith("http://") or doc_path.startswith("https://"):
+                docs = [normalizer.normalize_url(doc_path)]
+            else:
+                docs = [normalizer.normalize_file(Path(doc_path))]
             
             log_callback("正在分析文档需求...")
             adapter = get_adapter(use_dummy=use_dummy)
@@ -266,9 +269,12 @@ class TaskManager:
             from runner.executor.runner import TaskRunner
             
             # 1. 编译 (Doc -> Bundle)
-            doc_path = f"uploads/{doc_id}"
-            if not os.path.exists(doc_path) and os.path.exists(doc_id):
-                  doc_path = doc_id
+            if doc_id.startswith("http://") or doc_id.startswith("https://"):
+                doc_path = doc_id
+            else:
+                doc_path = f"uploads/{doc_id}"
+                if not os.path.exists(doc_path) and os.path.exists(doc_id):
+                    doc_path = doc_id
             
             main_loop = asyncio.get_running_loop()
             

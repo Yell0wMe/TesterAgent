@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="web/public/logo.png" width="120" height="auto" alt="TesterAgent Cat" />
+<img src="web/public/logo.png" width="120" height="auto" alt="TesterAgent Logo" />
 
-# 🐱 TesterAgent
+# ⚡ TesterAgent
 
 **文档即测试，像魔法一样！✨**
 
@@ -10,10 +10,7 @@
 
 <p align="center">
   <a href="README.md">简体中文 🇨🇳</a> •
-  <a href="README.en.md">English 🇺🇸</a> •
-  <a href="README.de.md">Deutsch 🇩🇪</a> •
-  <a href="README.es.md">Español 🇪🇸</a> •
-  <a href="README.ru.md">Русский 🇷🇺</a>
+  <a href="README.en.md">English 🇺🇸</a>
 </p>
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-FFE873?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
@@ -25,100 +22,121 @@
 
 ---
 
-## 🐾 喵~ 欢迎来到 TesterAgent！
+## 🚀 欢迎来到自动化测试的新纪元
 
-**我是你的全自动测试小助手！** 
-是不是厌倦了写永远写不完的测试脚本？是不是因为需求变更频繁而头秃？
-把 PRD 文档投喂给我，剩下的交给我这只智能小猫咪吧！我会像人类一样阅读文档，拿起手机，帮你完成所有的测试工作！📱⚡
+**告别枯燥的脚本编写，拥抱智能代理 (Agent) 的力量！** 
 
-> **产品经理说**：
-> "这是一个能听懂人话的自动化平台。它不只要测得准，还要长得萌，用得爽！"
+是不是厌倦了维护永远在过期的测试脚本？是不是因为 UI 频繁变动而头秃？
+TesterAgent 将改变这一切！你只需要提供一份 **PRD 文档**（Word, PDF, Markdown 甚至 URL），剩下的全部交给我们。
 
----
-
-## ✨ 我有什么本领？(Features)
-
-### 1. 📖 文档即用例 (Document-as-Code)
-**拒绝机械劳动！**
-不需要你一行行写代码。你给我一份 Markdown 格式的产品文档，我就能读懂里面的逻辑，自动生成测试用例。我的理解能力可是超强的哦！🧠
-
-### 2. � 像人一样的执行力 (Agent-Led Execution)
-**我是有眼睛的！**
-我不需要那些冷冰冰的 `id` 或 `xpath`。我会像你一样看屏幕，识别按钮、图标和文字。界面改版了？没关系，我能看见新的样子！👀
-
-### 3. 🛡️ 安全第一 (Safety First)
-**我很乖，不乱动！**
-放心，我内置了安全围栏。删除、支付、退出登录这些危险操作，没有你的允许我绝对不会碰！你的生产环境很安全。🔒
-
-### 4. � 证据链判定 (Evidence-Based Verdict)
-**有图有真相！**
-我不仅告诉你测试通过了，还会把每一步的截图都拍下来给你看。哪里通过了，哪里报错了，一目了然。拒绝扯皮！📷
-
-### 5. 🖥️ 超高颜值的控制台
-**工作也要赏心悦目！**
-不仅功能强大，界面更是经过精心设计。实时投屏让你看我干活，流水线视图清晰展示每一个步骤。谁说测试工具只能是黑乎乎的终端？🎨
+它不只是一个工具，更像是一个拥有**人类级理解力**和**视觉感知能力**的数字员工，不知疲倦地帮你完成端到端的验收测试。📱⚡
 
 ---
 
-## 🏗️ 我是如何工作的？(Architecture)
+## ✨ 核心能力 (Core Features)
 
-其实很简单，我分三步走：
+### 1. 📖 文档驱动 (Document-Driven)
+**从需求直接到报告。**
+不需要编写一行测试代码。系统通过大模型深度阅读产品文档，自动拆解业务逻辑，生成可执行的测试规格（TestSpec）。它读得懂简单的描述，也理解复杂的业务约束。
+
+### 2. 👁️ 视觉感知 (Vision-Based Execution)
+**像人类一样"看"屏幕。**
+抛弃脆弱的 `id` 或 `xpath` 选择器。TesterAgent 使用先进的多模态模型 (VLM) 实时分析屏幕截图，通过视觉特征定位按钮和图标。即使 UI 布局调整，只要用户看得到，它就能找得到。
+
+### 3. 🛡️ 安全围栏 (Safety Guardrails)
+**智能风控，安全无忧。**
+内置严格的安全策略引擎。涉及真实支付、账号注销、隐私授权等高风险操作时，Agent 会自动识别并触发保护机制（自动跳过或请求人工确认），确保生产环境绝对安全。
+
+### 4. 📊 证据链留存 (Visual Evidence)
+**过程透明，有图有真相。**
+每一次点击、每一次输入、每一次断言判定，系统都会自动截取屏幕快照并关联日志。测试报告不再是枯燥的 `Pass/Fail`，而是完整的图文故事，让 Bug 无处遁形。
+
+---
+
+## 🛠️ 它是如何工作的？(Deep Dive)
+
+TesterAgent 的魔法源自其独特的**三段式流水线 (Three-Stage Pipeline)** 设计，我们将复杂的测试任务拆解为由于不同专长的大模型协作完成的工序。
 
 ```mermaid
 graph LR
-    subgraph "Phase 1: 阅读理解"
-    Doc[📄 产品文档] -->|思考| Build[🧩 生成规格]
+    subgraph "Phase 1: 认知与理解"
+    Doc[📄 PRD文档] -->|提取| Miner[🧠 需求分析师]
+    Miner -->|条目化| Reqs[📝 需求条目]
     end
 
-    subgraph "Phase 2: 准备工作"
-    Build -->|打包| Bundle[📦 任务包]
+    subgraph "Phase 2: 规划与设计"
+    Reqs -->|转换| Synthesizer[🏗️ 架构师]
+    Synthesizer -->|编译| Spec[📜 TestSpec YAML]
+    Spec -->|打包| Bundle[📦 任务执行包]
     end
 
-    subgraph "Phase 3: 无人驾驶"
-    Bundle -->|执行| Cat[🐱 智能体 Agent]
-    Cat -->|操作| Phone[📱 真实手机]
-    Cat -->|拍照| Report[📊 图文报告]
+    subgraph "Phase 3: 执行与观测"
+    Bundle -->|加载| Runner[🤖 执行代理]
+    Runner <-->|视觉交互| Phone[📱 移动设备]
+    Runner -->|判定| Judge[⚖️ 裁判员]
     end
 
-    style Cat fill:#ffdd00,stroke:#333,stroke-width:2px,rx:10,ry:10
+    style Runner fill:#7d5fff,stroke:#333,stroke-width:2px,color:white
 ```
+
+### 🔍 Phase 1: 认知 (Mining) - "像分析师一样阅读"
+在这个阶段，LLM 扮演**资深测试分析师**的角色。
+- **Context Mining（上下文挖掘）**：不仅仅是提取文字，系统会首先分析文档的元数据（标题、开头），识别当前测试的 **目标应用**（是京东还是淘宝？）、**目标页面** 和 **环境要求**。
+- **Requirement Extraction（原子化拆解）**：将长篇大论的文档拆解为一个个独立的、可测试的“需求条目”。它会自动区分 **正常路径 (Happy Path)**、**异常路径 (Exceptions)** 和 **边界条件**。
+
+### 🏗️ Phase 2: 规划 (Synthesis) - "像架构师一样设计"
+有了需求条目后，LLM 扮演**测试架构师**的角色，将其转化为机器可读的 **TestSpec (测试规格)**。
+- **YAML Generation**：将自然语言的需求转化为结构化的 YAML 代码。
+- **Precondition Injection**：自动注入前置条件。例如，如果需求是“搜索商品”，它会自动添加“启动 App”和“确保登录”的前置指令。
+- **Assertion Design**：设计验证点。它会思考：“如果这一步成功了，屏幕上应该出现什么？”从而生成具体的 UI 断言（如 `ui_text_present: "支付成功"`）。
+
+### 🤖 Phase 3: 执行 (Execution) - "像用户一样操作"
+这是最激动人心的部分。**多模态代理 (VLM Agent) ** 接管控制权。
+- **Visual Grounding**：Agent 获取手机实时截图，结合当前步骤的目标（如“点击搜索框”），利用视觉模型计算出 UI 元素的精确坐标。
+- **Self-Correction (自愈)**：如果点击失败或弹出了广告窗，Agent 会像人类一样尝试关闭弹窗或重试，而不是直接报错退出。
+- **Take Over (人机协同)**：遇到无法处理的复杂场景（如复杂的验证码），Agent 会主动请求人工介入。
 
 ---
 
-## � 快速领养指南 (Quick Start)
+## 🚀 快速开始 (Quick Start)
 
-### 准备猫粮 (环境依赖)
-- Python 3.10+
-- Node.js 18+ (为了漂亮的界面)
-- 一台连着电脑的 Android 手机 (ADB)
+### 环境准备
+- **Python 3.10+** (后端核心)
+- **Node.js 18+** (Web 控制台)
+- **Android 设备** (真机或模拟器，需开启 ADB 调试)
 
-### 1. 唤醒后端
+### 1. 启动大脑 (Backend)
 ```bash
+# 克隆仓库
 git clone https://github.com/your-org/TesterAgent.git
 cd TesterAgent
+
+# 创建虚拟环境
 python3 -m venv .venv
 source .venv/bin/activate
+
+# 安装依赖 (包含 Zhipu AI 支持)
 pip install -e ".[dev,zhipu]"
 
-# 记得告诉我 Zhipu API Key 哦！
+# 配置 API Key
 cp .env.example .env
-# 编辑 .env 文件填入 Key
+# 编辑 .env 文件，填入你的 ZHIPU_API_KEY
 ```
 
-### 2. 启动漂亮的界面
+### 2. 启动控制台 (Frontend)
 ```bash
 cd web
 npm install
 npm run dev
-# 然后打开浏览器访问 http://localhost:3000
+# 浏览器访问 http://localhost:3000
 ```
 
 ---
 
-## ❤️ 特别鸣谢
+## ❤️ 致谢
 
-本项目部分核心能力致敬并受惠于 **智谱 AI (Zhipu AI)** 的开源工作。
-感谢 **AutoGLM** 团队为开源社区带来的卓越贡献，让 Agent 能够如此丝滑地操控手机！🚀
+本项目核心的多模态交互能力致敬并受益于 **智谱 AI (Zhipu AI)** 的开源工作。
+特别感谢 **AutoGLM** 团队在 Device Agent 领域的探索，为本项目提供了强大的理论与实践基础！🚀
 
 ---
 
@@ -126,6 +144,6 @@ npm run dev
 
 **[📚 详细文档](docs/intro.md) | [🤝 参与贡献](CONTRIBUTING.md) | [📫 联系作者](mailto:hwangshuaige@gmail.com)**
 
-Built with ❤️ & 🐱 by Sharon & TesterAgent Team
+Built with ❤️ by TesterAgent Team
 
 </div>

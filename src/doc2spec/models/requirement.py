@@ -47,6 +47,20 @@ class RequirementItem(BaseModel):
         description="前置条件"
     )
     
+    # 上下文信息 (Environment Context)
+    target_app: str | None = Field(
+        default=None, 
+        description="目标应用名称（如'京东APP', '微信'）"
+    )
+    target_page: str | None = Field(
+        default=None, 
+        description="目标页面/入口（如'首页>搜索', '个人中心'）"
+    )
+    env_specs: str | None = Field(
+        default=None, 
+        description="环境/设备要求（如'Android 10+', '弱网'）"
+    )
+    
     # 额外信号
     verifiable_signals: list[str] = Field(
         default_factory=list, 

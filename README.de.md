@@ -1,12 +1,12 @@
 <div align="center">
 
-<img src="web/public/logo.png" width="120" height="auto" alt="TesterAgent Cat" />
+<img src="web/public/logo.png" width="120" height="auto" alt="TesterAgent Logo" />
 
-# 🐱 TesterAgent
+# ⚡ TesterAgent
 
-**Dokumentation ist Funktionalität, wie Magie! ✨**
+**Dokumente als Tests, wie Magie! ✨**
 
-*Eine intelligente Automatisierungsplattform, die PRD-Dokumente in Testberichte verwandelt.*
+*Die intelligente Automatisierungsplattform, die Anforderungen in Testberichte verwandelt*
 
 <p align="center">
   <a href="README.md">简体中文 🇨🇳</a> •
@@ -25,100 +25,121 @@
 
 ---
 
-## 🐾 Miau~ Willkommen bei TesterAgent!
+## 🚀 Willkommen in der neuen Ära der Testautomatisierung
 
-**Ich bin dein vollautomatischer Testassistent!** 
-Müde davon, endlose Testskripte zu schreiben? Gestresst von häufigen Anforderungsänderungen?
-Füttere mich einfach mit deinen PRD-Dokumenten und überlasse den Rest diesem intelligenten Kätzchen! Ich lese die Dokumente wie ein Mensch, nehme das Telefon und erledige alle Tests für dich! 📱⚡
+**Verabschieden Sie sich von anfälligen Skripten, nutzen Sie die Kraft intelligenter Agenten!**
 
-> **Der Produktmanager sagt**:
-> "Das ist nicht nur ein Testwerkzeug; es ist eine Plattform, die menschliche Sprache spricht. Präzise, niedlich und eine Freude zu benutzen!"
+Müde davon, Skripte zu warten, die bei jeder UI-Änderung kaputtgehen?
+TesterAgent ändert das Spiel. Sie stellen einfach ein **PRD-Dokument** (Word, PDF, Markdown oder URL) zur Verfügung, und wir erledigen den Rest.
 
----
-
-## ✨ Was sind meine Superkräfte? (Features)
-
-### 1. 📖 Document-as-Code (Dokument als Code)
-**Sag Nein zu mechanischer Arbeit!**
-Du musst keinen Code Zeile für Zeile schreiben. Gib mir ein Produkt-Dokument in Markdown, und ich verstehe die Logik und generiere automatisch Testfälle. Mein Leseverständnis ist erstklassig! 🧠
-
-### 2. 🤖 Agenten-gesteuerte Ausführung
-**Ich habe Augen!**
-Ich brauche keine kalten, harten `id` oder `xpath` Selektoren. Ich schaue auf den Bildschirm genau wie du und erkenne Buttons, Icons und Text. UI geändert? Kein Problem, ich kann den neuen Look sehen! 👀
-
-### 3. 🛡️ Sicherheit geht vor
-**Ich bin ein braves Kätzchen, ich benehme mich!**
-Keine Sorge, ich habe Sicherheitsgeländer. Gefährliche Aktionen wie das Löschen von Konten oder Zahlungen sind ohne deine Erlaubnis strengstens verboten. Deine Produktionsumgebung ist sicher bei mir. 🔒
-
-### 4. 📸 Evidenz-basiertes Urteil
-**Fotos oder es ist nicht passiert!**
-Ich sage dir nicht einfach "Bestanden" oder "Fehlgeschlagen". Ich mache Screenshots von jedem Schritt. Sieh genau, was passiert ist und wo es schief gelaufen ist. Keine Diskussionen mehr! 📷
-
-### 5. 🖥️ Wunderschöne Web-Konsole
-**Arbeit sollte schön sein!**
-Mächtige Funktionen verpackt in einem wunderschönen Design. Sieh mir bei der Arbeit über die Live-Bildschirmspiegelung zu und verfolge jeden Schritt in der Pipeline-Ansicht. Wer hat gesagt, dass Entwickler-Tools hässlich sein müssen? 🎨
+Es ist nicht nur ein Werkzeug, sondern ein **Digitaler Mitarbeiter** mit **menschlichem Verständnis** und **visueller Wahrnehmung**, der unermüdlich End-to-End-Akzeptanztests für Sie durchführt. 📱⚡
 
 ---
 
-## 🏗️ Wie arbeite ich? (Architektur)
+## ✨ Kernfunktionen (Core Features)
 
-Es ist wirklich einfach. Nur drei Schritte:
+### 1. 📖 Dokumentengetriebenes Testen
+**Von Anforderungen direkt zu Berichten.**
+Kein zeilenweises Schreiben von Testcode mehr. Das System liest Ihre Produktdokumentation mit LLMs, dekonstruiert automatisch die Geschäftslogik und generiert ausführbare Testspezifikationen. Es versteht sowohl einfache Beschreibungen als auch komplexe geschäftliche Einschränkungen.
+
+### 2. 👁️ Visuelle Wahrnehmung
+**"Sieht" den Bildschirm wie ein Mensch.**
+Vergessen Sie fragile `id`- oder `xpath`-Selektoren. TesterAgent verwendet fortschrittliche Vision-Language Models (VLM), um Screenshots in Echtzeit zu analysieren und Schaltflächen sowie Symbole anhand visueller Merkmale zu lokalisieren. Selbst wenn sich das UI-Layout ändert: Solange ein Benutzer es sehen kann, findet der Agent es.
+
+### 3. 🛡️ Sicherheitsleitplanken
+**Intelligente Risikokontrolle.**
+Eingebaute strenge Sicherheitsrichtlinien. Bei risikoreichen Operationen wie echten Zahlungen, Kontolöschungen oder Datenschutzfreigaben erkennt der Agent diese automatisch und löst Schutzmechanismen aus (überspringen oder manuelle Bestätigung anfordern), um sicherzustellen, dass Ihre Produktionsumgebung absolut sicher ist.
+
+### 4. 📊 Visuelle Beweise
+**Transparenter Prozess, Wahrheit in Bildern.**
+Jeder Klick, jede Eingabe und jede Zusicherung wird automatisch mit Screenshots und Protokollen erfasst. Testberichte sind nicht mehr nur `Pass/Fail`, sondern vollständige visuelle Geschichten, die Bugs nirgendwo verstecken lassen.
+
+---
+
+## 🛠️ Wie es funktioniert (Deep Dive)
+
+Die Magie von TesterAgent liegt in seiner einzigartigen **Drei-Stufen-Pipeline**, die komplexe Testaufgaben in spezialisierte Workflows zerlegt.
 
 ```mermaid
 graph LR
-    subgraph "Phase 1: Lesen"
-    Doc[📄 Doku] -->|Denken| Build[🧩 Spec]
+    subgraph "Phase 1: Kognition & Verständnis"
+    Doc[📄 PRD Dokument] -->|Extrahieren| Miner[🧠 Analyst]
+    Miner -->|Aufschlüsseln| Reqs[📝 Anforderungen]
     end
 
-    subgraph "Phase 2: Packen"
-    Build -->|Packen| Bundle[📦 Bundle]
+    subgraph "Phase 2: Planung & Design"
+    Reqs -->|Konvertieren| Synthesizer[🏗️ Architekt]
+    Synthesizer -->|Kompilieren| Spec[📜 TestSpec YAML]
+    Spec -->|Packen| Bundle[📦 Ausführungspaket]
     end
 
-    subgraph "Phase 3: Autopilot"
-    Bundle -->|Ausführen| Cat[🐱 Agent]
-    Cat -->|Berühren| Phone[📱 Telefon]
-    Cat -->|Knipsen| Report[📊 Bericht]
+    subgraph "Phase 3: Ausführung & Beobachtung"
+    Bundle -->|Laden| Runner[🤖 Ausführungs-Agent]
+    Runner <-->|Visuelle Interaktion| Phone[📱 Mobilgerät]
+    Runner -->|Urteil| Judge[⚖️ Schiedsrichter]
     end
 
-    style Cat fill:#ffdd00,stroke:#333,stroke-width:2px,rx:10,ry:10
+    style Runner fill:#7d5fff,stroke:#333,stroke-width:2px,color:white
 ```
+
+### 🔍 Phase 1: Mining - "Lesen wie ein Analyst"
+In dieser Phase agiert das LLM als **Senior Test Analyst**.
+- **Context Mining**: Analysiert Dokumentenmetadaten, um die **Ziel-App** (z.B. JD vs. Taobao), die **Zielseite** und **Umgebungsspezifikationen** zu identifizieren.
+- **Requirement Extraction**: Zerlegt lange Dokumente in atomare, testbare "Anforderungspunkte" und unterscheidet zwischen **Happy Paths**, **Ausnahmen** und **Randbedingungen**.
+
+### 🏗️ Phase 2: Synthesis - "Entwerfen wie ein Architekt"
+Das LLM agiert dann als **Testarchitekt** und wandelt Anforderungen in maschinenlesbare **TestSpecs** um.
+- **YAML Generation**: Konvertiert natürliche Sprache in strukturiertes YAML.
+- **Precondition Injection**: Fügt automatisch Einrichtungsschritte hinzu. Wenn beispielsweise nach einem Produkt gesucht wird, fügt es Anweisungen wie "App starten" und "Sicherstellen, dass eingeloggt" hinzu.
+- **Assertion Design**: Entwirft Überprüfungspunkte. Es fragt: "Wenn dieser Schritt erfolgreich ist, was sollte auf dem Bildschirm erscheinen?" und generiert konkrete UI-Zusicherungen (z.B. `ui_text_present: "Zahlung erfolgreich"`).
+
+### 🤖 Phase 3: Execution - "Bedienen wie ein Benutzer"
+Der aufregendste Teil. Der **Multimodale Agent (VLM Agent)** übernimmt die Kontrolle.
+- **Visual Grounding**: Erfasst Echtzeit-Screenshots des Telefons, kombiniert sie mit dem Ziel des aktuellen Schritts und berechnet präzise UI-Koordinaten mithilfe visueller Modelle.
+- **Self-Correction**: Wenn ein Klick fehlschlägt oder eine Werbung erscheint, versucht der Agent, sie zu schließen oder es erneut zu versuchen, genau wie ein Mensch.
+- **Take Over**: Bei komplexen Szenarien (wie CAPTCHAs) kann der Agent manuelles Eingreifen anfordern.
 
 ---
 
-## 🚀 Adoptionsleitfaden (Schnellstart)
+## 🚀 Schnellstart (Quick Start)
 
-### Katzenfutter (Anforderungen)
-- Python 3.10+
-- Node.js 18+ (Für die hübsche UI)
-- Ein Android-Telefon, verbunden über ADB
+### Voraussetzungen
+- **Python 3.10+** (Backend Core)
+- **Node.js 18+** (Web Konsole)
+- **Android Gerät** (Echtes Gerät oder Emulator mit aktiviertem ADB)
 
-### 1. Wecke das Backend auf
+### 1. Das Gehirn starten (Backend)
 ```bash
+# Repository klonen
 git clone https://github.com/your-org/TesterAgent.git
 cd TesterAgent
+
+# Virtuelle Umgebung erstellen
 python3 -m venv .venv
 source .venv/bin/activate
+
+# Abhängigkeiten installieren (mit Zhipu AI Support)
 pip install -e ".[dev,zhipu]"
 
-# Vergiss meinen Zhipu API Key nicht!
+# API Key konfigurieren
 cp .env.example .env
-# Bearbeite .env und trage den Key ein
+# .env Datei bearbeiten und ZHIPU_API_KEY eintragen
 ```
 
-### 2. Starte die hübsche UI
+### 2. Die Konsole starten (Frontend)
 ```bash
 cd web
 npm install
 npm run dev
-# Öffne http://localhost:3000
+# Browser öffnen unter http://localhost:3000
 ```
 
 ---
 
-## ❤️ Besonderer Dank
+## ❤️ Danksagung
 
-Dieses Projekt profitiert immens von der Open-Source-Arbeit von **Zhipu AI**.
-Großen Dank an das **AutoGLM**-Team für ihre herausragenden Beiträge zur Community, die es Agenten ermöglichen, Telefone so reibungslos zu steuern! 🚀
+Die multimodalen Interaktionsfähigkeiten dieses Projekts basieren auf der Open-Source-Arbeit von **Zhipu AI**.
+Besonderer Dank geht an das **AutoGLM** Team für ihre Erforschung von Device Agents! 🚀
 
 ---
 
@@ -126,6 +147,6 @@ Großen Dank an das **AutoGLM**-Team für ihre herausragenden Beiträge zur Comm
 
 **[📚 Dokumentation](docs/intro.md) | [🤝 Mitwirken](CONTRIBUTING.md) | [📫 Kontakt](mailto:hwangshuaige@gmail.com)**
 
-Erstellt mit ❤️ & 🐱 von Sharon & dem TesterAgent Team
+Built with ❤️ by TesterAgent Team
 
 </div>

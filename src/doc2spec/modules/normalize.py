@@ -6,15 +6,23 @@ Normalize 模块 - 文档标准化
 """
 
 import re
+import requests
 from pathlib import Path
 from dataclasses import dataclass, field
 from enum import Enum
+from bs4 import BeautifulSoup
+import markdownify
+from pypdf import PdfReader
+from docx import Document
 
 
 class DocFormat(str, Enum):
     """文档格式"""
     MARKDOWN = "markdown"
     TEXT = "text"
+    HTML = "html"
+    DOCX = "docx"
+    PDF = "pdf"
     UNKNOWN = "unknown"
 
 
@@ -114,11 +122,47 @@ class Normalizer:
         
         if not path.is_file():
             raise ValueError(f"不是文件: {path}")
+            
+        suffix = path.suffix.lower()
+        doc_id = path.stem
         
-        content = path.read_text(encoding="utf-8")
-        doc_id = path.stem  # 使用文件名作为 doc_id
+        if suffix == ".docx":
+            return self._normalize_docx(path, doc_id)
+        elif suffix == ".pdf":
+            return self._normalize_pdf(path, doc_id)
+        elif suffix in [".html", ".htm"]:
+            content = path.read_text(encoding="utf-8")
+            return self._normalize_html(content, doc_id)
+        else:
+            # 默认当作文本处理，然后尝试检测 Markdown
+            try:
+                content = path.read_text(encoding="utf-8")
+                return self.normalize(content, doc_id)
+            except UnicodeDecodeError:
+                # 二进制文件如果不直接支持则报错
+                raise ValueError(f"不支持的文件格式: {suffix}")
+
+    def normalize_url(self, url: str) -> NormalizedDoc:
+        """
+        从 URL 标准化文档 (Web Page)
         
-        return self.normalize(content, doc_id)
+        Args:
+            url: 网页 URL
+            
+        Returns:
+            NormalizedDoc: 标准化后的文档
+        """
+        try:
+            resp = requests.get(url, timeout=30)
+            resp.raise_for_status()
+            
+            # 尝试检测编码
+            if resp.encoding is None:
+                resp.encoding = 'utf-8'
+                
+            return self._normalize_html(resp.text, url, is_url=True)
+        except Exception as e:
+            raise ValueError(f"无法获取 URL 内容: {e}")
     
     def normalize_directory(self, path: str | Path) -> list[NormalizedDoc]:
         """
@@ -372,3 +416,73 @@ class Normalizer:
             start_line=start_line,
             end_line=end_line
         )
+
+    def _normalize_docx(self, path: Path, doc_id: str) -> NormalizedDoc:
+        """标准化 DOCX 文档 (转换为 Markdown 处理)"""
+        try:
+            doc = Document(path)
+            md_lines = []
+            for p in doc.paragraphs:
+                text = p.text.strip()
+                if not text:
+                    continue
+                    
+                style = p.style.name
+                if 'Heading 1' in style:
+                    md_lines.append(f"# {text}")
+                elif 'Heading 2' in style:
+                    md_lines.append(f"## {text}")
+                elif 'Heading 3' in style:
+                    md_lines.append(f"### {text}")
+                elif 'Heading 4' in style:
+                    md_lines.append(f"#### {text}")
+                elif 'Heading 5' in style:
+                    md_lines.append(f"##### {text}")
+                else:
+                    md_lines.append(text)
+            
+            content = "\n\n".join(md_lines)
+            normalized = self._normalize_markdown(content, doc_id)
+            normalized.format = DocFormat.DOCX
+            return normalized
+            
+        except Exception as e:
+            raise ValueError(f"解析 DOCX 失败: {e}")
+
+    def _normalize_pdf(self, path: Path, doc_id: str) -> NormalizedDoc:
+        """标准化 PDF 文档 (提取文本)"""
+        try:
+            reader = PdfReader(path)
+            text_parts = []
+            for i, page in enumerate(reader.pages):
+                page_text = page.extract_text()
+                if page_text:
+                    text_parts.append(f"--- Page {i+1} ---")
+                    text_parts.append(page_text)
+            
+            content = "\n\n".join(text_parts)
+            # PDF 很难提取结构，作为纯文本处理
+            normalized = self._normalize_text(content, doc_id)
+            normalized.format = DocFormat.PDF
+            return normalized
+            
+        except Exception as e:
+            raise ValueError(f"解析 PDF 失败: {e}")
+
+    def _normalize_html(self, content: str, doc_id: str, is_url: bool = False) -> NormalizedDoc:
+        """标准化 HTML (转换为 Markdown 处理)"""
+        try:
+            # 转换为 Markdown
+            md_content = markdownify.markdownify(content, heading_style="ATX")
+            
+            normalized = self._normalize_markdown(md_content, doc_id)
+            normalized.format = DocFormat.HTML
+            
+            # 如果是 URL，更新标题
+            if is_url:
+                normalized.title = doc_id
+                
+            return normalized
+            
+        except Exception as e:
+            raise ValueError(f"解析 HTML/Web 失败: {e}")

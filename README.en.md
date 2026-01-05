@@ -1,19 +1,16 @@
 <div align="center">
 
-<img src="web/public/logo.png" width="120" height="auto" alt="TesterAgent Cat" />
+<img src="web/public/logo.png" width="120" height="auto" alt="TesterAgent Logo" />
 
-# 🐱 TesterAgent
+# ⚡ TesterAgent
 
-**Documentation is functionality, like magic! ✨**
+**Test Docs as Code, Like Magic! ✨**
 
-*An intelligent automation platform that turns PRD docs into test reports.*
+*The Intelligent Automation Platform turning Requirements into Test Reports*
 
 <p align="center">
   <a href="README.md">简体中文 🇨🇳</a> •
-  <a href="README.en.md">English 🇺🇸</a> •
-  <a href="README.de.md">Deutsch 🇩🇪</a> •
-  <a href="README.es.md">Español 🇪🇸</a> •
-  <a href="README.ru.md">Русский 🇷🇺</a>
+  <a href="README.en.md">English 🇺🇸</a>
 </p>
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-FFE873?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
@@ -25,100 +22,121 @@
 
 ---
 
-## 🐾 Meow~ Welcome to TesterAgent!
+## 🚀 Welcome to the New Era of Test Automation
 
-**I am your fully automated testing assistant!** 
-Tired of writing endless test scripts? Stressed out by frequent requirement changes?
-Just feed me your PRD documents, and leave the rest to this smart kitty! I'll read the docs like a human, pick up the phone, and finish all the testing for you! 📱⚡
+**Say goodbye to brittle scripts, embrace the power of Intelligent Agents!**
 
-> **Product Manager Says**:
-> "This isn't just a testing tool; it's a platform that speaks human language. Precise, cute, and a joy to use!"
+TIRED of maintaining scripts that break with every UI change?
+TesterAgent changes the game. You simply provide a **PRD Document** (Word, PDF, Markdown, or URL), and we handle the rest.
 
----
-
-## ✨ What are my superpowers? (Features)
-
-### 1. 📖 Document-as-Code
-**Say no to mechanical work!**
-No need to write code line by line. Give me a Markdown product document, and I'll understand the logic and generate test cases automatically. My reading comprehension is top-notch! 🧠
-
-### 2. 🤖 Agent-Led Execution
-**I have eyes!**
-I don't need cold, hard `id` or `xpath` selectors. I look at the screen just like you do, recognizing buttons, icons, and text. UI changed? No problem, I can see the new look! 👀
-
-### 3. 🛡️ Safety First
-**I'm a good kitty, I behave!**
-Don't worry, I have safety guardrails. Dangerous actions like deleting accounts or payments are strictly off-limits without your permission. Your production environment is safe with me. 🔒
-
-### 4. 📸 Evidence-Based Verdict
-**Pics or it didn't happen!**
-I don't just tell you "Pass" or "Fail". I take screenshots of every step. See exactly what happened and where it went wrong. No more arguments! 📷
-
-### 5. 🖥️ Beautiful Web Console
-**Work should be beautiful!**
-Powerful features wrapped in a gorgeous design. Watch me work via live screen mirroring, and track every step in the pipeline view. Who said dev tools have to be ugly? 🎨
+It's not just a tool; it's a **Digital Employee** with **Human-level Understanding** and **Visual Perception**, tirelessly performing end-to-end acceptance testing for you. 📱⚡
 
 ---
 
-## 🏗️ How do I work? (Architecture)
+## ✨ Core Features
 
-It's simple, really. Just three steps:
+### 1. 📖 Document-Driven Testing
+**From Requirements directly to Reports.**
+No more coding test cases line by line. The system reads your product documentation using LLMs, automatically deconstructs business logic, and generates executable Test Specs. It understands simple descriptions as well as complex business constraints.
+
+### 2. 👁️ Vision-Based Execution
+**"Sees" the screen like a human.**
+Abandon fragile `id` or `xpath` selectors. TesterAgent uses advanced Vision-Language Models (VLM) to analyze screen screenshots in real-time, locating buttons and icons by visual features. Even if the UI layout changes, as long as a user can see it, the Agent can find it.
+
+### 3. 🛡️ Safety Guardrails
+**Smart Risk Control.**
+Built-in strict safety policies. For high-risk operations like real payments, account deletion, or privacy authorization, the Agent automatically recognizes and triggers protection mechanisms (skipping or asking for manual confirmation), ensuring your production environment is absolutely safe.
+
+### 4. 📊 Visual Evidence
+**Transparent Process, Truth in Pictures.**
+Every click, every input, and every assertion is automatically captured with screenshots and logs. Test reports are no longer just `Pass/Fail`, but complete visual stories, leaving bugs nowhere to hide.
+
+---
+
+## 🛠️ How It Works (Deep Dive)
+
+The magic of TesterAgent comes from its unique **Three-Stage Pipeline**, decomposing complex testing tasks into specialized workflows handled by different LLM roles.
 
 ```mermaid
 graph LR
-    subgraph "Phase 1: Reading"
-    Doc[📄 Docs] -->|Think| Build[🧩 Spec]
+    subgraph "Phase 1: Cognition & Understanding"
+    Doc[📄 PRD Document] -->|Extract| Miner[🧠 Analyst]
+    Miner -->|Itemize| Reqs[📝 Requirement Items]
     end
 
-    subgraph "Phase 2: Packing"
-    Build -->|Pack| Bundle[📦 Bundle]
+    subgraph "Phase 2: Planning & Design"
+    Reqs -->|Convert| Synthesizer[🏗️ Architect]
+    Synthesizer -->|Compile| Spec[📜 TestSpec YAML]
+    Spec -->|Package| Bundle[📦 Execution Bundle]
     end
 
-    subgraph "Phase 3: Auto-Pilot"
-    Bundle -->|Execute| Cat[🐱 Agent]
-    Cat -->|Touch| Phone[📱 Phone]
-    Cat -->|Snap| Report[📊 Report]
+    subgraph "Phase 3: Execution & Observation"
+    Bundle -->|Load| Runner[🤖 Execution Agent]
+    Runner <-->|Visual Interaction| Phone[📱 Mobile Device]
+    Runner -->|Verdict| Judge[⚖️ Referee]
     end
 
-    style Cat fill:#ffdd00,stroke:#333,stroke-width:2px,rx:10,ry:10
+    style Runner fill:#7d5fff,stroke:#333,stroke-width:2px,color:white
 ```
+
+### 🔍 Phase 1: Mining - "Reading like an Analyst"
+In this stage, the LLM acts as a **Senior Test Analyst**.
+- **Context Mining**: Analyzes document metadata to identify the **Target App** (e.g., JD vs. Taobao), **Target Page**, and **Environment Specs**.
+- **Requirement Extraction**: Deconstructs long documents into atomic, testable "Requirement Items", distinguishing between **Happy Paths**, **Exceptions**, and **Boundary Conditions**.
+
+### 🏗️ Phase 2: Synthesis - "Designing like an Architect"
+The LLM then acts as a **Test Architect**, converting requirements into machine-readable **TestSpecs**.
+- **YAML Generation**: Converts natural language into structured YAML.
+- **Precondition Injection**: Automatically injects setup steps. For example, if searching for a product, it adds "Launch App" and "Ensure Logged In" instructions.
+- **Assertion Design**: Designs verification points. It asks: "If this step succeeds, what should appear on the screen?" generating concrete UI assertions (e.g., `ui_text_present: "Payment Success"`).
+
+### 🤖 Phase 3: Execution - "Operating like a User"
+The most exciting part. The **Multimodal Agent (VLM Agent)** takes control.
+- **Visual Grounding**: Captures real-time phone screenshots, combines them with the current step's goal, and calculates precise UI coordinates using visual models.
+- **Self-Correction**: If a click fails or an ad pops up, the Agent attempts to close it or retry, just like a human would.
+- **Take Over**: For complex scenarios (like CAPTCHAs), the Agent can request manual intervention.
 
 ---
 
-## 🚀 Adoption Guide (Quick Start)
+## 🚀 Quick Start
 
-### Cat Food (Requirements)
-- Python 3.10+
-- Node.js 18+ (For the pretty UI)
-- An Android phone connected via ADB
+### Prerequisites
+- **Python 3.10+** (Backend Core)
+- **Node.js 18+** (Web Console)
+- **Android Device** (Real device or Emulator with ADB enabled)
 
-### 1. Wake up the Backend
+### 1. Start the Brain (Backend)
 ```bash
+# Clone the repository
 git clone https://github.com/your-org/TesterAgent.git
 cd TesterAgent
+
+# Create virtual environment
 python3 -m venv .venv
 source .venv/bin/activate
+
+# Install dependencies (with Zhipu AI support)
 pip install -e ".[dev,zhipu]"
 
-# Don't forget my Zhipu API Key!
+# Configure API Key
 cp .env.example .env
-# Edit .env and fill in the Key
+# Edit .env and fill in your ZHIPU_API_KEY
 ```
 
-### 2. Start the Pretty UI
+### 2. Start the Console (Frontend)
 ```bash
 cd web
 npm install
 npm run dev
-# Open http://localhost:3000
+# Open browser at http://localhost:3000
 ```
 
 ---
 
-## ❤️ Special Thanks
+## ❤️ Credits
 
-This project benefits greatly from the open-source work of **Zhipu AI**.
-Big thanks to the **AutoGLM** team for their outstanding contributions to the community, enabling agents to control phones so smoothly! 🚀
+The core multimodal interaction capabilities of this project leverage the open-source work of **Zhipu AI**.
+Special thanks to the **AutoGLM** team for their exploration in Device Agents, providing a strong foundation for this project! 🚀
 
 ---
 
@@ -126,6 +144,6 @@ Big thanks to the **AutoGLM** team for their outstanding contributions to the co
 
 **[📚 Documentation](docs/intro.md) | [🤝 Contributing](CONTRIBUTING.md) | [📫 Contact](mailto:hwangshuaige@gmail.com)**
 
-Built with ❤️ & 🐱 by Sharon & TesterAgent Team
+Built with ❤️ by TesterAgent Team
 
 </div>
