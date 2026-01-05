@@ -61,6 +61,20 @@ async def get_run(run_id: str):
         raise HTTPException(status_code=404, detail="Run not found")
     return run
 
+@router.delete("")
+async def delete_all_runs():
+    """清除所有历史任务（保留进行中）"""
+    count = task_manager.delete_all_completed_runs()
+    return {"status": "ok", "deleted_count": count}
+
+@router.delete("/{run_id}")
+async def delete_run(run_id: str):
+    """删除历史任务"""
+    success = task_manager.delete_run(run_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Run not found")
+    return {"status": "deleted", "run_id": run_id}
+
 @router.get("/{run_id}/artifacts")
 async def get_run_artifacts(run_id: str):
     """获取任务产物清单"""

@@ -53,7 +53,7 @@ dmypy.json
 *.log
 
 # Project specific data
-runs/
+/runs/
 uploads/
 bundles/
 
@@ -67,3 +67,5 @@ web/.env*.local
 # OS
 .DS_Store
 Thumbs.db
+settings.json
+device_remarks.json

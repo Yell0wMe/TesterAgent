@@ -1,107 +1,98 @@
 <div align="center">
 
-# 🤖 TesterAgent
+<img src="web/public/logo.png" width="120" height="auto" alt="TesterAgent Cat" />
 
-**Plataforma de Automatización de Pruebas de Documento a Agente de Grado Industrial**
+# 🐱 TesterAgent
 
-*Plataforma de Pruebas Móviles Inteligente y Autobalanceada Impulsada por Documentos*
+**¡La documentación es funcionalidad, como por arte de magia! ✨**
+
+*Una plataforma de automatización inteligente que convierte documentos PRD en informes de prueba.*
 
 <p align="center">
-  <a href="README.md">简体中文</a> •
-  <a href="README.en.md">English</a> •
-  <a href="README.de.md">Deutsch</a> •
-  <a href="README.es.md">Español</a> •
-  <a href="README.ru.md">Русский</a>
+  <a href="README.md">简体中文 🇨🇳</a> •
+  <a href="README.en.md">English 🇺🇸</a> •
+  <a href="README.de.md">Deutsch 🇩🇪</a> •
+  <a href="README.es.md">Español 🇪🇸</a> •
+  <a href="README.ru.md">Русский 🇷🇺</a>
 </p>
 
-[Características](#✨-características) • [Arquitectura](#🏗️-arquitectura) • [Consola Web](#🖥️-consola-web) • [Inicio Rápido](#🚀-inicio-rápido) • [Hoja de Ruta](#🗺️-hoja-de-ruta)
-
-
----
-
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg?style=flat-square)](https://www.python.org/downloads/)
-[![Next.js 14](https://img.shields.io/badge/Next.js-14-black.svg?style=flat-square)](https://nextjs.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688.svg?style=flat-square)](https://fastapi.tiangolo.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
-
-**Convierta los documentos de requisitos directamente en resultados de pruebas.**  
-TesterAgent convierte automáticamente los PRD en lenguaje natural en especificaciones de prueba estructuradas, las ejecuta en dispositivos reales a través de agentes inteligentes y genera informes de prueba con una cadena de evidencia completa.
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-FFE873?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Next.js 14](https://img.shields.io/badge/Next.js-14-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![Zhipu GLM-4](https://img.shields.io/badge/Powered%20By-Zhipu%20AI-blue?style=for-the-badge)](https://www.zhipuai.cn/)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
 </div>
 
 ---
 
-## ✨ Características
+## 🐾 ¡Miau~ Bienvenido a TesterAgent!
 
-### 1. 📄 Documento como Código
-No más escritura manual de scripts de prueba. Ingrese PRD en formato Markdown/PDF y el sistema extraerá automáticamente los puntos de prueba para generar archivos `TestSpec` estandarizados.
+**¡Soy tu asistente de pruebas totalmente automatizado!** 
+¿Cansado de escribir interminables scripts de prueba? ¿Estresado por los frecuentes cambios de requisitos?
+¡Solo dame tus documentos PRD y déjale el resto a este gatito inteligente! Leeré los documentos como un humano, tomaré el teléfono y terminaré todas las pruebas por ti. 📱⚡
 
-### 2. 🧠 Ejecución Dirigida por Agentes
-Motor de pruebas adaptativo basado en LLM. No se necesitan selectores, no hay lógica de espera fija. El Agente entiende la pantalla y completa los objetivos como un humano.
-
-### 3. 🛡️ Seguridad Lista para Producción
-- **Guardias (Zonas Prohibidas)**: Identifica y restringe automáticamente acciones de alto riesgo (p. ej., pagos, eliminación de cuentas).
-- **Humano en el bucle**: Las rutas críticas (como 2FA) activan automáticamente solicitudes de toma de control manual.
-
-### 4. 📊 veredicto Basado en Evidencia
-Sin juicios de "caja negra". Cada aseveración (assertion) debe estar vinculada a una evidencia específica de OCR/imagen, asegurando una trazabilidad del 100%.
-
-### 5. 🖥️ Consola Web con Funciones Completas
-Interfaz de gestión moderna con duplicación de pantalla en tiempo real (Live View), monitoreo de la canalización de tareas y seguimiento profundo del historial.
+> **El Gerente de Producto dice**:
+> "Esto no es solo una herramienta de prueba; es una plataforma que habla el lenguaje humano. ¡Precisa, linda y un placer de usar!"
 
 ---
 
-## 🏗️ Arquitectura
+## ✨ ¿Cuáles son mis superpoderes? (Características)
 
-TesterAgent utiliza una arquitectura de canalización de tres capas para asegurar que cada paso, desde el requisito hasta la ejecución, sea determinista y configurable.
+### 1. 📖 Document-as-Code (Documento como Código)
+**¡Di no al trabajo mecánico!**
+No necesitas escribir código línea por línea. Dame un documento de producto en Markdown y entenderé la lógica y generaré casos de prueba automáticamente. ¡Mi comprensión lectora es de primera! 🧠
+
+### 2. 🤖 Ejecución Guiada por Agente
+**¡Tengo ojos!**
+No necesito selectores fríos y duros como `id` o `xpath`. Miro la pantalla igual que tú, reconociendo botones, iconos y texto. ¿Cambió la interfaz? ¡No hay problema, puedo ver el nuevo aspecto! 👀
+
+### 3. 🛡️ Seguridad Ante Todo
+**¡Soy un gatito bueno, me porto bien!**
+No te preocupes, tengo medidas de seguridad. Acciones peligrosas como eliminar cuentas o pagos están estrictamente prohibidas sin tu permiso. Tu entorno de producción está a salvo conmigo. 🔒
+
+### 4. 📸 Veredicto Basado en Evidencia
+**¡Foto o no sucedió!**
+No solo te digo "Aprobado" o "Fallido". Tomo capturas de pantalla de cada paso. Mira exactamente qué sucedió y dónde salió mal. ¡Se acabaron las discusiones! 📷
+
+### 5. 🖥️ Consola Web Hermosa
+**¡El trabajo debe ser bello!**
+Potentes funciones envueltas en un diseño magnífico. Mírame trabajar a través de la duplicación de pantalla en vivo y sigue cada paso en la vista de tubería. ¿Quién dijo que las herramientas de desarrollo tienen que ser feas? 🎨
+
+---
+
+## 🏗️ ¿Cómo trabajo? (Arquitectura)
+
+Es simple, de verdad. Solo tres pasos:
 
 ```mermaid
 graph LR
-    subgraph "Fase 1: Análisis"
-    Doc[PRD / MD] --> D2S[doc2spec]
-    D2S --> TS[TestSpec YAML]
+    subgraph "Fase 1: Lectura"
+    Doc[📄 Docs] -->|Pensar| Build[🧩 Spec]
     end
 
-    subgraph "Fase 2: Compilación"
-    TS --> T2P[t2p Compiler]
-    T2P --> TB[Task Bundle]
+    subgraph "Fase 2: Empaquetado"
+    Build -->|Empaquetar| Bundle[📦 Bundle]
     end
 
-    subgraph "Fase 3: Ejecución"
-    TB --> Runner[Runner & Judge]
-    Runner --> Evidence[Evidence Chain]
-    Evidence --> Verdict[Verified Report]
+    subgraph "Fase 3: Piloto Automático"
+    Bundle -->|Ejecutar| Cat[🐱 Agente]
+    Cat -->|Tocar| Phone[📱 Teléfono]
+    Cat -->|Capturar| Report[📊 Reporte]
     end
 
-    style D2S fill:#f9f,stroke:#333,stroke-width:2px
-    style T2P fill:#bbf,stroke:#333,stroke-width:2px
-    style Runner fill:#bfb,stroke:#333,stroke-width:2px
+    style Cat fill:#ffdd00,stroke:#333,stroke-width:2px,rx:10,ry:10
 ```
 
 ---
 
-## 🖥️ Consola Web
+## 🚀 Guía de Adopción (Inicio Rápido)
 
-**TesterAgent ofrece un panel de gestión web minimalista pero potente.**
-
-> [!TIP]
-> Use la Consola Web para gestionar tareas concurrentes a gran escala.
-
-- **Duplicación en Tiempo Real**: Reflejo de la pantalla del dispositivo con latencia de milisegundos para seguir las operaciones del Agente.
-- **Canalización de Tareas**: Visualice todo el proceso: Compilar -> Ejecutar -> Juzgar -> Informar.
-- **Centro de Dispositivos**: Conecte dispositivos físicos ADB/HDC con bloqueo/desbloqueo de un solo clic.
-- **Avisos de Toma de Control**: Las solicitudes de interacción aparecen automáticamente cuando el Agente llega a nodos especiales como inicio de sesión o pago.
-
----
-
-## 🚀 Inicio Rápido
-
-### Requisitos Previos
+### Comida para Gato (Requisitos)
 - Python 3.10+
-- Node.js 18+ (para la Consola Web)
-- Entorno ADB / HDC (para pruebas en dispositivos reales)
+- Node.js 18+ (Para la interfaz bonita)
+- Un teléfono Android conectado vía ADB
 
-### 1. Instalar el Backend
+### 1. Despierta el Backend
 ```bash
 git clone https://github.com/your-org/TesterAgent.git
 cd TesterAgent
@@ -109,64 +100,32 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev,zhipu]"
 
-# Configurar variables de entorno
+# ¡No olvides mi Clave API de Zhipu!
 cp .env.example .env
-# Completar ZHIPU_API_KEY
+# Edita .env y completa la Clave
 ```
 
-### 2. Instalar y Iniciar el Frontend
+### 2. Inicia la Interfaz Bonita
 ```bash
 cd web
 npm install
 npm run dev
-```
-
-### 3. Flujo de Trabajo CLI de Extremo a Extremo
-```bash
-# Compilar especificación desde documento
-doc2spec compile examples/wechat_prd.md -o out/
-
-# Compilar en tarea de Agente
-t2p compile out/specs/wechat_prd-TS-001.yaml -o bundles/
-
-# Ejecutar en dispositivo físico (especificar ID de dispositivo)
-runner run bundles/wechat_prd-TS-001_bundle/ --device "YOUR_ADB_ID"
+# Abre http://localhost:3000
 ```
 
 ---
 
-## 📂 Componentes Principales
+## ❤️ Agradecimientos Especiales
 
-| Componente | Descripción | Salida |
-| :--- | :--- | :--- |
-| **doc2spec** | Minería de requisitos y síntesis de especificaciones | `.yaml` (TestSpec) |
-| **t2p** | Compilador de políticas de Agente | `Task Bundle` (Prompts + Políticas) |
-| **runner** | Motor de ejecución y recolección de evidencia | `steps.jsonl` + `screenshots/` |
-| **verdict** | Sistema de juicio atómico basado en evidencia | `verdict.json` (Razón de Aprobación/Fallo) |
-
----
-
-## 🗺️ Hoja de Ruta
-
-- [x] **v0.1** - Canalización central de tres capas (Línea base)
-- [x] **v0.5** - Consola Web Next.js y WebSocket Live View
-- [x] **v1.0** - Lógica de compilación fuera de hilo, gestión multitarea
-- [ ] **v1.2** - Integración de Modelos: Soporte para GPT-4o / Claude 3.5 para aseveraciones
-- [ ] **v1.5** - Exportación de informes de prueba a PDF/Excel con un clic
-- [ ] **v2.0** - Ejecución paralela multiplataforma HarmonyOS / iOS
-
----
-
-## 📄 Licencia
-
-Este proyecto está bajo la [Licencia MIT](LICENSE).
+Este proyecto se beneficia enormemente del trabajo de código abierto de **Zhipu AI**.
+¡Muchas gracias al equipo de **AutoGLM** por sus destacadas contribuciones a la comunidad, permitiendo que los agentes controlen los teléfonos con tanta fluidez! 🚀
 
 ---
 
 <div align="center">
 
-**[Documentación](docs/intro.md) | [Contribuir](CONTRIBUTING.md) | [Contáctenos](mailto:hwangshuaige@gmail.com)**
+**[📚 Documentación](docs/intro.md) | [🤝 Contribuir](CONTRIBUTING.md) | [📫 Contacto](mailto:hwangshuaige@gmail.com)**
 
-Built with ⚡ by Sharon & TesterAgent Team
+Construido con ❤️ y 🐱 por Sharon y el Equipo TesterAgent
 
 </div>

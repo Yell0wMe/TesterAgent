@@ -133,7 +133,7 @@ class TextEngine(AssertionEngine):
             print(f"[Judge] 评估断言: {assertion_description}")
             
             response = client.chat.completions.create(
-                model="glm-4v-flash",
+                model=os.getenv("ZHIPU_MODEL", "glm-4v-flash"),
                 messages=[
                     {
                         "role": "user",
@@ -237,7 +237,7 @@ class TextEngine(AssertionEngine):
             print(f"[OCR] 正在分析截图: {evidence_path}")
                 
             response = client.chat.completions.create(
-                model="glm-4v-flash",
+                model=os.getenv("ZHIPU_MODEL", "glm-4v-flash"),
                 messages=[
                     {
                         "role": "user",

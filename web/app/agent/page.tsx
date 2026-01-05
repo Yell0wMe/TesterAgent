@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import axios from 'axios';
 import {
     Card,
@@ -25,13 +26,16 @@ import {
     Loader2,
     CheckCircle,
     XCircle,
-    AlertCircle
+    AlertCircle,
+    Edit2,
+    ArrowLeft
 } from 'lucide-react';
 import { toast } from "sonner";
 
 interface Device {
     id: string;
     model: string;
+    remark: string | null;
     status: string;
     type: string;
 }
@@ -149,7 +153,12 @@ export default function DirectAgentPage() {
     return (
         <div className="container mx-auto py-6 space-y-6 max-w-7xl">
             <div className="flex justify-between items-center bg-white/50 p-4 rounded-xl backdrop-blur-sm border shadow-sm">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4">
+                    <Link href="/">
+                        <Button variant="ghost" size="icon" className="rounded-full bg-white shadow-sm hover:bg-slate-50">
+                            <ArrowLeft className="h-5 w-5" />
+                        </Button>
+                    </Link>
                     <div className="w-10 h-10 rounded-lg bg-indigo-600 flex items-center justify-center shadow-lg">
                         <Send className="text-white w-6 h-6" />
                     </div>
@@ -160,22 +169,51 @@ export default function DirectAgentPage() {
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2 bg-slate-100 p-1.5 rounded-lg border">
-                        <Smartphone className="w-4 h-4 text-slate-500" />
-                        <select
-                            className="bg-transparent text-sm font-medium focus:outline-none min-w-[150px]"
-                            value={selectedDevice}
-                            onChange={(e) => setSelectedDevice(e.target.value)}
-                            disabled={isRunning}
-                        >
-                            {devices.length === 0 ? (
-                                <option value="">无在线设备</option>
-                            ) : (
-                                devices.map(d => (
-                                    <option key={d.id} value={d.id}>{d.model || d.id}</option>
-                                ))
-                            )}
-                        </select>
+                    <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 bg-slate-100 p-1.5 rounded-lg border">
+                            <Smartphone className="w-4 h-4 text-slate-500" />
+                            <select
+                                className="bg-transparent text-sm font-medium focus:outline-none min-w-[150px]"
+                                value={selectedDevice}
+                                onChange={(e) => setSelectedDevice(e.target.value)}
+                                disabled={isRunning}
+                            >
+                                {devices.length === 0 ? (
+                                    <option value="">无在线设备</option>
+                                ) : (
+                                    devices.map(d => (
+                                        <option key={d.id} value={d.id}>{d.remark || d.model || d.id}</option>
+                                    ))
+                                )}
+                            </select>
+                        </div>
+                        {selectedDevice && (
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                                onClick={async () => {
+                                    const currentDevice = devices.find(d => d.id === selectedDevice);
+                                    const newRemark = prompt('输入设备备注:', currentDevice?.remark || '');
+                                    if (newRemark !== null) {
+                                        try {
+                                            await axios.put(`/api/devices/${selectedDevice}/remark`, { remark: newRemark });
+                                            toast.success('备注已更新');
+                                            // Refresh devices
+                                            const res = await axios.get('/api/devices');
+                                            const online = res.data.filter((d: Device) => d.status !== 'offline');
+                                            setDevices(online);
+                                        } catch (err) {
+                                            toast.error('更新备注失败');
+                                        }
+                                    }
+                                }}
+                                disabled={isRunning}
+                                title="编辑设备备注"
+                            >
+                                <Edit2 className="w-4 h-4" />
+                            </Button>
+                        )}
                     </div>
 
                     {isRunning ? (
@@ -192,6 +230,7 @@ export default function DirectAgentPage() {
                         </Button>
                     )}
                 </div>
+
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[calc(100vh-220px)]">
@@ -300,6 +339,6 @@ export default function DirectAgentPage() {
                     </Card>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

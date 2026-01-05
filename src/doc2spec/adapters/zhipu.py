@@ -17,7 +17,7 @@ class ZhipuAdapter(LLMAdapter):
     def __init__(
         self,
         api_key: str | None = None,
-        model: str = "glm-4",
+        model: str | None = None,
         temperature: float = 0.1,
         max_tokens: int = 4096
     ):
@@ -34,7 +34,7 @@ class ZhipuAdapter(LLMAdapter):
         if not self.api_key:
             raise ValueError("需要提供 api_key 或设置 ZHIPU_API_KEY 环境变量")
         
-        self.model = model
+        self.model = model or os.getenv("ZHIPU_MODEL", "glm-4")
         self.temperature = temperature
         self.max_tokens = max_tokens
         self._client = None

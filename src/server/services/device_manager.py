@@ -1,6 +1,8 @@
 import asyncio
 import subprocess
 import logging
+import json
+import os
 from datetime import datetime
 from typing import Dict
 
@@ -8,11 +10,33 @@ from server.schemas.device import Device, DeviceStatus
 
 logger = logging.getLogger(__name__)
 
+DEVICE_REMARKS_FILE = "device_remarks.json"
+
 class DeviceManager:
     def __init__(self):
         self._devices: Dict[str, Device] = {}
+        self._remarks: Dict[str, str] = {}  # device_id -> remark
         self._polling_task = None
         self._running = False
+        self._load_remarks()
+    
+    def _load_remarks(self):
+        """Load device remarks from disk"""
+        if os.path.exists(DEVICE_REMARKS_FILE):
+            try:
+                with open(DEVICE_REMARKS_FILE, "r", encoding="utf-8") as f:
+                    self._remarks = json.load(f)
+                logger.info(f"Loaded {len(self._remarks)} device remarks")
+            except Exception as e:
+                logger.warning(f"Failed to load device remarks: {e}")
+    
+    def _save_remarks(self):
+        """Save device remarks to disk"""
+        try:
+            with open(DEVICE_REMARKS_FILE, "w", encoding="utf-8") as f:
+                json.dump(self._remarks, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            logger.error(f"Failed to save device remarks: {e}")
         
     async def start(self):
         """启动设备轮询"""
@@ -38,6 +62,16 @@ class DeviceManager:
     
     def get_device(self, device_id: str) -> Device | None:
         return self._devices.get(device_id)
+
+    def update_remark(self, device_id: str, remark: str) -> bool:
+        """Update device remark"""
+        device = self._devices.get(device_id)
+        if not device:
+            return False
+        device.remark = remark
+        self._remarks[device_id] = remark
+        self._save_remarks()
+        return True
 
     def lock_device(self, device_id: str, run_id: str) -> bool:
         """锁定设备"""
@@ -112,6 +146,7 @@ class DeviceManager:
                     id=device_id,
                     type="adb",
                     model=model,
+                    remark=self._remarks.get(device_id),  # Restore saved remark
                     status=DeviceStatus.FREE,
                     last_heartbeat=datetime.now()
                 )
@@ -130,3 +165,4 @@ class DeviceManager:
 
 # Singleton
 device_manager = DeviceManager()
+

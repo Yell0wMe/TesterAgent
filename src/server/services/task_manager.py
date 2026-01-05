@@ -67,6 +67,46 @@ class TaskManager:
         """获取任务列表"""
         return list(self._runs.values())
 
+    def delete_run(self, run_id: str) -> bool:
+        """删除历史任务（从内存和磁盘）"""
+        import shutil
+        if run_id not in self._runs:
+            return False
+        
+        # Remove from memory
+        del self._runs[run_id]
+        
+        # Remove from disk
+        run_dir = os.path.join("runs", run_id)
+        if os.path.exists(run_dir):
+            try:
+                shutil.rmtree(run_dir)
+                logger.info(f"Deleted run directory: {run_dir}")
+            except Exception as e:
+                logger.error(f"Failed to delete run directory {run_dir}: {e}")
+        
+        return True
+
+    def delete_all_completed_runs(self) -> int:
+        """删除所有已完成任务（从内存和磁盘）"""
+        import shutil
+        
+        # 找出非 running 状态的任务 ID
+        # 注意：这里需要根据实际状态字段判断
+        # 假设 status 为 running 表示正在进行，其他如 completed, failed, stopped 表示已结束
+        to_delete = []
+        for run_id, meta in self._runs.items():
+            status = meta.get("status", "unknown")
+            if status != "running":
+                to_delete.append(run_id)
+        
+        count = 0
+        for run_id in to_delete:
+            self.delete_run(run_id)
+            count += 1
+            
+        return count
+
     async def create_run(self, doc_id: str, device_id: str, config: dict) -> str:
         """创建并启动基于文档的任务"""
         import os

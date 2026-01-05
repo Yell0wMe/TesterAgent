@@ -11,7 +11,7 @@ load_dotenv()
 
 from server.services.device_manager import device_manager
 from server.services.task_manager import manager
-from server.api import devices, runs, docs
+from server.api import devices, runs, docs, settings
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -41,6 +41,7 @@ app.add_middleware(
 app.include_router(devices.router)
 app.include_router(runs.router)
 app.include_router(docs.router)
+app.include_router(settings.router)
 
 # Mount Static Files for Runs (artifacts, screenshots, reports)
 import os
