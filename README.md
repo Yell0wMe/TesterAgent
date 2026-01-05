@@ -10,7 +10,10 @@
 
 <p align="center">
   <a href="README.md">简体中文 🇨🇳</a> •
-  <a href="README.en.md">English 🇺🇸</a>
+  <a href="README.en.md">English 🇺🇸</a> •
+  <a href="README.de.md">Deutsch 🇩🇪</a> •
+  <a href="README.es.md">Español 🇪🇸</a> •
+  <a href="README.ru.md">Русский 🇷🇺</a>
 </p>
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-FFE873?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
@@ -95,6 +98,19 @@ graph LR
 - **Visual Grounding**：Agent 获取手机实时截图，结合当前步骤的目标（如“点击搜索框”），利用视觉模型计算出 UI 元素的精确坐标。
 - **Self-Correction (自愈)**：如果点击失败或弹出了广告窗，Agent 会像人类一样尝试关闭弹窗或重试，而不是直接报错退出。
 - **Take Over (人机协同)**：遇到无法处理的复杂场景（如复杂的验证码），Agent 会主动请求人工介入。
+
+---
+
+## ⚠️ 局限性与注意事项 (Limitations)
+
+虽然 TesterAgent 很强大，但目前版本仍存在以下局限性：
+
+1.  **仅支持 Android**：目前仅适配 Android 设备（通过 ADB 连接），暂不支持 iOS 设备。
+2.  **执行速度**：由于依赖多模态大模型 (VLM) 进行实时视觉分析，单步推断耗时约 2-5 秒，执行速度低于原生 Appium/Espresso 脚本。
+3.  **验证范围**：目前主要支持基于视觉（文本、图标）的 UI 验证。暂不支持数据库状态校验或 API 接口抓包验证。
+4.  **成本提示**：大量的视觉分析和需求挖掘会消耗较多的 LLM Token，请注意监控 API 使用额度。
+    *   **预估计算**：一个包含 10 个步骤的标准测试用例，全流程约消耗 **30k-50k Token**（含多模态图像输入）。按当前主流视觉模型定价（约 ¥10/100万 Token）计算，单次执行成本约 **¥0.3 - ¥0.5 RMB**。
+5.  **幻觉风险**：在极度拥挤或非标准 UI 界面上，VLM 仍可能出现识别错误或幻觉，建议在关键步骤配合人工复核。
 
 ---
 

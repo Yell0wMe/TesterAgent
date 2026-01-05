@@ -10,7 +10,10 @@
 
 <p align="center">
   <a href="README.md">简体中文 🇨🇳</a> •
-  <a href="README.en.md">English 🇺🇸</a>
+  <a href="README.en.md">English 🇺🇸</a> •
+  <a href="README.de.md">Deutsch 🇩🇪</a> •
+  <a href="README.es.md">Español 🇪🇸</a> •
+  <a href="README.ru.md">Русский 🇷🇺</a>
 </p>
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-FFE873?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
@@ -95,6 +98,19 @@ The most exciting part. The **Multimodal Agent (VLM Agent)** takes control.
 - **Visual Grounding**: Captures real-time phone screenshots, combines them with the current step's goal, and calculates precise UI coordinates using visual models.
 - **Self-Correction**: If a click fails or an ad pops up, the Agent attempts to close it or retry, just like a human would.
 - **Take Over**: For complex scenarios (like CAPTCHAs), the Agent can request manual intervention.
+
+---
+
+## ⚠️ Limitations & Notices
+
+While TesterAgent is powerful, the current version has some limitations:
+
+1.  **Android Only**: Currently supports only Android devices (via ADB). iOS is not supported.
+2.  **Execution Speed**: Due to heavy VLM usage, inference takes about 2-5 seconds per step, making it slower than native Appium/Espresso scripts.
+3.  **Verification Scope**: Primarily supports visual UI verification (text/icon). Database state or API response verification is not yet supported.
+4.  **Cost Awareness**: Heavy visual analysis and mining consume significant LLM tokens. Please monitor your API usage quota.
+    *   **Cost Estimate**: A standard test case with 10 steps consumes approx. **30k-50k Tokens** (including multimodal vision input). Based on current VLM pricing (~¥10/1M Tokens), the cost is approx. **¥0.3 - ¥0.5 RMB per run** (~$0.04 - $0.07 USD).
+5.  **Hallucination Risk**: On extremely cluttered or non-standard UIs, VLM may occasionally misinterpret elements. Human review is recommended for critical paths.
 
 ---
 

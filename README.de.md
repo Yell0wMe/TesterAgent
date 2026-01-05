@@ -101,6 +101,19 @@ Der aufregendste Teil. Der **Multimodale Agent (VLM Agent)** übernimmt die Kont
 
 ---
 
+## ⚠️ Einschränkungen und Hinweise (Limitations)
+
+Obwohl TesterAgent leistungsstark ist, gibt es in der aktuellen Version einige Einschränkungen:
+
+1.  **Nur Android**: Unterstützt derzeit nur Android-Geräte (über ADB). iOS wird nicht unterstützt.
+2.  **Ausführungsgeschwindigkeit**: Aufgrund der starken Nutzung von VLM dauert die Inferenz ca. 2-5 Sekunden pro Schritt, was langsamer ist als native Appium/Espresso-Skripte.
+3.  **Verifizierungsumfang**: Unterstützt hauptsächlich visuelle UI-Verifizierung (Text/Icon). Datenbankstatus- oder API-Antwortverifizierung wird noch nicht unterstützt.
+4.  **Kostenbewusstsein**: Intensive visuelle Analysen und Mining verbrauchen signifikante LLM-Token. Bitte überwachen Sie Ihr API-Nutzungskontingent.
+    *   **Kostenschätzung**: Ein Standard-Testfall mit 10 Schritten verbraucht ca. **30k-50k Token** (inkl. multimodaler Eingabe). Basierend auf den aktuellen Preisen von visuellen Modellen (~¥10/1M Token) betragen die Kosten ca. **¥0.3 - ¥0.5 RMB pro Durchlauf**.
+5.  **Halluzinationsrisiko**: Bei extrem überladenen oder nicht standardisierten UIs kann das VLM Elemente gelegentlich falsch interpretieren. Eine menschliche Überprüfung wird für kritische Pfade empfohlen.
+
+---
+
 ## 🚀 Schnellstart (Quick Start)
 
 ### Voraussetzungen
