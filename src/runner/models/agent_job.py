@@ -25,7 +25,7 @@ class DeviceConfig(BaseModel):
 
 class RunConfig(BaseModel):
     """运行配置"""
-    lang: str = Field(default="zh", description="语言 zh/en")
+    lang: str = Field(default="cn", description="语言 cn/en")
     max_steps: int = Field(default=40, description="最大步骤数")
     timeout_sec: int = Field(default=180, description="超时秒数")
     verbose: bool = Field(default=True, description="详细输出")

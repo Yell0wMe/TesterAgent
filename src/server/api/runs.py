@@ -20,6 +20,18 @@ async def create_run(request: CreateRunRequest):
     run_id = await task_manager.create_run(request.doc_id, request.device_id, request.config)
     return {"run_id": run_id, "status": "pending"}
 
+class CreateDirectRunRequest(BaseModel):
+    instruction: str
+    device_id: str
+    config: dict = {}
+
+@router.post("/direct")
+async def create_direct_run(request: CreateDirectRunRequest):
+    """创建并执行快捷 AI 任务"""
+    run_id = await task_manager.create_direct_run(request.device_id, request.instruction, request.config)
+    return {"run_id": run_id, "status": "pending"}
+
+
 @router.post("/{run_id}/stop")
 async def stop_run(run_id: str):
     """停止任务"""

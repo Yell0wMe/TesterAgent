@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Activity, Smartphone, Play, FileText, Clock, ArrowRight, Zap } from 'lucide-react';
+import { Activity, Smartphone, Play, FileText, Clock, ArrowRight, Zap, Send } from 'lucide-react';
 import axios from 'axios';
 
 interface RunSummary {
@@ -28,12 +28,12 @@ export default function Home() {
       setRecentRuns(runs.slice(0, 5)); // Show only 5 recent
       setTotalRuns(runs.length);
       setRunningCount(runs.filter((r: RunSummary) => r.status === 'running').length);
-    }).catch(() => {});
+    }).catch(() => { });
 
     // Fetch device count
     axios.get('/api/devices').then(res => {
       setDeviceCount(res.data?.filter((d: any) => d.status !== 'offline').length || 0);
-    }).catch(() => {});
+    }).catch(() => { });
   }, []);
 
   const getStatusBadge = (status: string) => {
@@ -118,6 +118,21 @@ export default function Home() {
           </Card>
         </Link>
 
+        <Link href="/agent" className="block group">
+          <Card className="h-full transition-all hover:shadow-lg hover:border-indigo-500 cursor-pointer">
+            <CardContent className="p-6 flex items-center gap-5">
+              <div className="p-4 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white group-hover:scale-105 transition-transform">
+                <Send className="h-8 w-8" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-xl font-bold mb-1">快捷 AI 任务</h3>
+                <p className="text-muted-foreground text-sm">直接输入需求指令，让 AI 操作设备</p>
+              </div>
+              <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-indigo-500 group-hover:translate-x-1 transition-all" />
+            </CardContent>
+          </Card>
+        </Link>
+
         <Link href="/devices" className="block group">
           <Card className="h-full transition-all hover:shadow-lg hover:border-blue-500 cursor-pointer">
             <CardContent className="p-6 flex items-center gap-5">
@@ -133,6 +148,7 @@ export default function Home() {
           </Card>
         </Link>
       </div>
+
 
       {/* Recent Runs */}
       {recentRuns.length > 0 && (

@@ -2,6 +2,7 @@ import asyncio
 import uuid
 import json
 import logging
+import os
 from datetime import datetime
 from typing import Dict, Any, List
 
@@ -67,14 +68,15 @@ class TaskManager:
         return list(self._runs.values())
 
     async def create_run(self, doc_id: str, device_id: str, config: dict) -> str:
-        """创建并启动任务"""
+        """创建并启动基于文档的任务"""
         import os
         import json
         
-        run_id = f"web_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{str(uuid.uuid4())[:8]}"
+        run_id = f"web_doc_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{str(uuid.uuid4())[:8]}"
         
         run_data = {
             "id": run_id,
+            "type": "doc",
             "doc_id": doc_id,
             "device_id": device_id,
             "status": "pending",
@@ -94,6 +96,40 @@ class TaskManager:
         asyncio.create_task(self._run_task(run_id, doc_id, device_id, config))
         
         return run_id
+
+    async def create_direct_run(self, device_id: str, instruction: str, config: dict = None) -> str:
+        """创建并启动快捷 AI 任务"""
+        try:
+            import json
+            
+            run_id = f"web_ai_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{str(uuid.uuid4())[:8]}"
+            logger.info(f"Creating direct run {run_id} for device {device_id}")
+            
+            run_data = {
+                "id": run_id,
+                "type": "direct",
+                "instruction": instruction,
+                "device_id": device_id,
+                "status": "pending",
+                "created_at": datetime.now().isoformat(),
+                "logs": [],
+                "config": config or {}
+            }
+            
+            self._runs[run_id] = run_data
+            
+            # Persist initial metadata
+            os.makedirs(os.path.join("runs", run_id), exist_ok=True)
+            with open(os.path.join("runs", run_id, "run_meta.json"), "w", encoding="utf-8") as f:
+                json.dump(run_data, f, ensure_ascii=False, indent=2)
+            
+            # 异步启动
+            asyncio.create_task(self._run_direct_task(run_id, device_id, instruction, config or {}))
+            
+            return run_id
+        except Exception as e:
+            logger.error(f"Failed to create direct run: {e}", exc_info=True)
+            raise e
         
     async def _update_status(self, run_id: str, status: str):
         if run_id in self._runs:
@@ -180,6 +216,7 @@ class TaskManager:
             raise e
 
     async def _run_task(self, run_id: str, doc_id: str, device_id: str, config: dict):
+        """执行基于文档生成的任务"""
         await self._update_status(run_id, "running")
         await manager.broadcast(run_id, {"type": "status", "status": "running"})
         
@@ -198,23 +235,53 @@ class TaskManager:
             def log_callback(msg):
                 asyncio.run_coroutine_threadsafe(self._log(run_id, msg), main_loop)
 
-            # Offload compilation to thread to avoid blocking the event loop
-            try:
-                bundle_path = await asyncio.to_thread(
-                    self._compile_task_sync, 
-                    run_id, 
-                    doc_path, 
-                    log_callback
-                )
-            except Exception as e:
-                # Error already logged inside _compile_task_sync
-                raise e
+            # Offload compilation to thread
+            bundle_path = await asyncio.to_thread(
+                self._compile_task_sync, 
+                run_id, 
+                doc_path, 
+                log_callback
+            )
 
-            # 2. 执行 Runner
-            api_key = os.getenv("ZHIPU_API_KEY")
+            # 2. 执行并判定
+            await self._execute_run(run_id, bundle_path=bundle_path, device_id=device_id)
             
-            # Ensure Runner uses the correct runs_dir (our web runs dir)
-            runner = TaskRunner(runs_dir="runs", mock=False, api_key=api_key, use_agent=True)
+        except Exception as e:
+            logger.error(f"Run {run_id} failed: {e}", exc_info=True)
+            await self._log(run_id, f"错误: {str(e)}")
+            await self._update_status(run_id, "failed")
+            await manager.broadcast(run_id, {"type": "status", "status": "failed"})
+
+    async def _run_direct_task(self, run_id: str, device_id: str, instruction: str, config: dict):
+        """执行快捷 AI 任务"""
+        await self._update_status(run_id, "running")
+        await manager.broadcast(run_id, {"type": "status", "status": "running"})
+        
+        try:
+            await self._log(run_id, f"收到快捷任务请求: {instruction}")
+            
+            # 执行并判定
+            await self._execute_run(run_id, instruction=instruction, device_id=device_id)
+            
+        except Exception as e:
+            logger.error(f"Direct run {run_id} failed: {e}", exc_info=True)
+            await self._log(run_id, f"错误: {str(e)}")
+            await self._update_status(run_id, "failed")
+            await manager.broadcast(run_id, {"type": "status", "status": "failed"})
+
+    async def _execute_run(self, run_id: str, device_id: str, bundle_path: str = None, instruction: str = None):
+        """核心执行逻辑 (Runner + Judge)"""
+        import os
+        from pathlib import Path
+        from runner.executor.runner import TaskRunner
+        from runner.models.agent_job import AgentJob, ModelConfig, DeviceConfig, RunConfig, PolicyConfig, EvidencePlan
+        
+        main_loop = asyncio.get_running_loop()
+        api_key = os.getenv("ZHIPU_API_KEY")
+        
+        try:
+            # 1. 准备 Runner
+            runner = TaskRunner(runs_dir="runs", mock=False, api_key=api_key or "", use_agent=True)
             self._active_runners[run_id] = runner
             
             # 定义回调
@@ -229,75 +296,113 @@ class TaskManager:
                         self._log(run_id, f"执行步骤: {action_name}"),
                         main_loop
                     )
-                    
-                    # 检查 Takeover
                     if action_name == "Take_over":
                         args_raw = step_data["action"].get("args_raw", "")
-                        message = "Agent 请求人工接管"
                         asyncio.run_coroutine_threadsafe(
                              manager.broadcast(run_id, {
                                  "type": "takeover_request", 
-                                 "message": args_raw or message
+                                 "message": args_raw or "Agent 请求人工接管"
                              }),
                              main_loop
                         )
-                # LIVE VIEW: Steady Event-driven Way
+                
                 try:
                     if "screen" in step_data and step_data["screen"]:
-                        rel_path = step_data["screen"]
-                        # The URL for frontend to fetch the screenshot
-                        screenshot_url = f"/artifacts/{run_id}/{rel_path}"
+                        screenshot_url = f"/artifacts/{run_id}/{step_data['screen']}"
                         asyncio.run_coroutine_threadsafe(
-                             manager.broadcast(run_id, {
-                                 "type": "live_update", 
-                                 "url": screenshot_url
-                             }),
+                             manager.broadcast(run_id, {"type": "live_update", "url": screenshot_url}),
                              main_loop
                         )
                 except Exception as e:
-                    logger.warning(f"Failed to send live update: {e}")
+                    logger.warning(f"Live update failed: {e}")
 
-            await self._log(run_id, f"启动 TaskRunner (Device: {device_id})...")
+            # 2. 准备执行动作
+            run_dir = os.path.join("runs", run_id)
             
-            def run_sync():
-                return runner.run_with_agent(
-                    bundle_dir=bundle_path,
-                    device_id=device_id if device_id != "mock" else None,
-                    on_step_callback=on_step,
-                    run_id=run_id
-                )
-            
-            artifact = await asyncio.to_thread(run_sync)
-            
-            # Check if it was stopped
-            final_status = self._runs[run_id].get("status")
-            if final_status != "stopped":
-                # Run Judge to generate verdict
-                await self._log(run_id, "正在生成测试判定报告...")
-                try:
-                    from runner.judge.judge import Judge
-                    judge = Judge(mock=False, api_key=api_key or "")
-                    run_dir = os.path.join("runs", run_id)
-                    # Load observation_spec from bundle if exists
-                    obs_spec = None
-                    import glob
-                    bundle_pattern = os.path.join(run_dir, "bundle_out", "*", "observation_spec.json")
-                    obs_files = glob.glob(bundle_pattern)
-                    if obs_files:
-                        from t2p.models.observation import ObservationSpec
-                        with open(obs_files[0], "r", encoding="utf-8") as f:
-                            obs_spec = ObservationSpec.model_validate_json(f.read())
-                    verdict = judge.judge(run_dir, observation_spec=obs_spec)
-                    await self._log(run_id, f"测试判定完成: {verdict.status.value} ({verdict.summary})")
-                except Exception as e:
-                    logger.warning(f"Judge failed for {run_id}: {e}")
-                    await self._log(run_id, f"判定生成失败: {str(e)}")
+            if bundle_path:
+                # 模式 A: 基于 Bundle 执行
+                await self._log(run_id, f"启动 TaskRunner (Device: {device_id})...")
+                def run_sync():
+                    return runner.run_with_agent(
+                        bundle_dir=bundle_path,
+                        device_id=device_id if device_id != "mock" else None,
+                        on_step_callback=on_step,
+                        run_id=run_id
+                    )
+                artifact = await asyncio.to_thread(run_sync)
+            else:
+                # 模式 B: 直接指令执行
+                await self._log(run_id, f"启动快捷 AI 任务 (Device: {device_id})...")
                 
-                # Update meta with artifact info
+                # 手动创建临时 AgentJob
+                job = AgentJob(
+                    job_id=run_id,
+                    task_text=instruction,
+                    model=ModelConfig(api_key=api_key or ""),
+                    device=DeviceConfig(device_id=device_id if device_id != "mock" else None),
+                    run=RunConfig(max_steps=40),
+                    policy=PolicyConfig(),
+                    evidence_plan=EvidencePlan(),
+                    workspace_dir=run_dir
+                )
+                
+                def run_direct_sync():
+                    from runner.executor.phoneagent_adapter import PhoneAgentAdapter
+                    from runner.models.run_artifact import RunArtifact, RunMeta, RunStatus
+                    
+                    # 初始化 Adapter 并运行
+                    adapter = PhoneAgentAdapter(mock=False, on_step=on_step)
+                    runner.adapter = adapter # 方便 stop()
+                    
+                    start_time = datetime.now()
+                    result = adapter.run(job)
+                    
+                    # 转换为 Artifact
+                    artifact = RunArtifact(
+                        meta=RunMeta(
+                            run_id=run_id,
+                            case_id="direct_task",
+                            bundle_id="direct",
+                            device_id=device_id,
+                            started_at=start_time,
+                            finished_at=datetime.now(),
+                            status=RunStatus.PASS if result.status == "finished" else RunStatus.ERROR
+                        ),
+                        artifact_dir=run_dir,
+                        evidence_dir=os.path.join(run_dir, "evidence")
+                    )
+                    return artifact
+
+                artifact = await asyncio.to_thread(run_direct_sync)
+
+            # 3. 结果保存与判定
+            if self._runs[run_id].get("status") != "stopped":
+                # 如果是文档任务或包含断言的捷径任务，可以跑判定
+                if bundle_path:
+                    await self._log(run_id, "正在生成测试判定报告...")
+                    try:
+                        from runner.judge.judge import Judge
+                        from t2p.models.observation import ObservationSpec
+                        import glob
+                        
+                        judge = Judge(mock=False, api_key=api_key or "")
+                        obs_spec = None
+                        bundle_pattern = os.path.join(run_dir, "bundle_out", "*", "observation_spec.json")
+                        obs_files = glob.glob(bundle_pattern)
+                        if obs_files:
+                            with open(obs_files[0], "r", encoding="utf-8") as f:
+                                obs_spec = ObservationSpec.model_validate_json(f.read())
+                        
+                        verdict = judge.judge(run_dir, observation_spec=obs_spec)
+                        await self._log(run_id, f"测试判定完成: {verdict.status.value} ({verdict.summary})")
+                    except Exception as e:
+                        logger.warning(f"Judge failed for {run_id}: {e}")
+                        await self._log(run_id, f"判定生成失败: {str(e)}")
+
                 self._runs[run_id]["artifact_path"] = str(artifact.artifact_dir)
                 await self._update_status(run_id, "done")
                 await manager.broadcast(run_id, {"type": "status", "status": "done"})
-            
+
         except asyncio.CancelledError:
              logger.info(f"Run {run_id} cancelled (asyncio)")
              if self._runs[run_id].get("status") != "stopped":
@@ -313,6 +418,7 @@ class TaskManager:
         finally:
             if run_id in self._active_runners:
                 del self._active_runners[run_id]
+
 
     async def _log(self, run_id: str, content: str):
         entry = {"ts": datetime.now().isoformat(), "content": content}
