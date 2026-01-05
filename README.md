@@ -6,9 +6,18 @@
 
 *文档驱动的移动端智能自平衡测试平台*
 
+<p align="center">
+  <a href="README.md">简体中文</a> •
+  <a href="README.en.md">English</a> •
+  <a href="README.de.md">Deutsch</a> •
+  <a href="README.es.md">Español</a> •
+  <a href="README.ru.md">Русский</a>
+</p>
+
 [特性](#✨-特性) • [架构](#🏗️-核心架构) • [Web 控制台](#🖥️-web-控制台) • [快速开始](#🚀-快速开始) • [Roadmap](#🗺️-roadmap)
 
 ---
+
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg?style=flat-square)](https://www.python.org/downloads/)
 [![Next.js 14](https://img.shields.io/badge/Next.js-14-black.svg?style=flat-square)](https://nextjs.org/)
