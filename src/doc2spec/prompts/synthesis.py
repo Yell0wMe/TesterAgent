@@ -31,7 +31,9 @@ SYNTHESIS_SYSTEM_PROMPT = """你是一个专业的测试规格生成器。你的
 - ui_element_state: 按钮状态
 - ui_element_state: 按钮状态
 - ui_count: 列表项数量
-5. **环境转化**：如果输入中包含 `目标应用`，必须将其转化为 `preconditions` 中的 `custom` 指令（如 "启动 京东App"）。"""
+5. **环境转化**：
+   - 如果输入包含 `target_app`，转化为 `preconditions.custom.launch_cmd` (如 "启动 京东App")。
+   - 如果输入包含 `target_url`，转化为 `preconditions.custom.launch_cmd` (如 "https://m.jd.com")。"""
 
 
 def get_synthesis_prompt() -> str:

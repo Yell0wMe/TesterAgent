@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Activity, Smartphone, Play, FileText, Clock, ArrowRight, Zap, Send } from 'lucide-react';
+import { Activity, Smartphone, Play, FileText, Clock, ArrowRight, Zap, Send, Globe } from 'lucide-react';
 import axios from 'axios';
 
 interface RunSummary {
@@ -104,20 +104,21 @@ export default function Home() {
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
         <Link href="/runs/new" className="block group">
-          <Card className="h-full transition-all hover:shadow-lg hover:border-primary cursor-pointer">
+          <Card className="h-full transition-all hover:shadow-lg hover:border-primary cursor-pointer border-l-4 border-l-primary">
             <CardContent className="p-6 flex items-center gap-5">
               <div className="p-4 rounded-2xl bg-gradient-to-br from-primary to-primary/70 text-primary-foreground group-hover:scale-105 transition-transform">
                 <Play className="h-8 w-8" />
               </div>
               <div className="flex-1">
                 <h3 className="text-xl font-bold mb-1">新建测试任务</h3>
-                <p className="text-muted-foreground text-sm">上传 PRD 文档并开始自动化测试</p>
+                <p className="text-muted-foreground text-sm">上传 PRD 文档执行全流程自动化测试</p>
               </div>
               <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
             </CardContent>
           </Card>
         </Link>
 
+        {/* Quick AI Tasks Section */}
         <Link href="/agent" className="block group">
           <Card className="h-full transition-all hover:shadow-lg hover:border-indigo-500 cursor-pointer">
             <CardContent className="p-6 flex items-center gap-5">
@@ -126,24 +127,39 @@ export default function Home() {
               </div>
               <div className="flex-1">
                 <h3 className="text-xl font-bold mb-1">快捷 AI 任务</h3>
-                <p className="text-muted-foreground text-sm">直接输入需求指令，让 AI 操作设备</p>
+                <p className="text-muted-foreground text-sm">直接输入指令，让 AI 操作安卓设备</p>
               </div>
               <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-indigo-500 group-hover:translate-x-1 transition-all" />
             </CardContent>
           </Card>
         </Link>
 
-        <Link href="/devices" className="block group">
+        <Link href="/web-test" className="block group">
           <Card className="h-full transition-all hover:shadow-lg hover:border-blue-500 cursor-pointer">
             <CardContent className="p-6 flex items-center gap-5">
               <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-white group-hover:scale-105 transition-transform">
+                <Globe className="h-8 w-8" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-xl font-bold mb-1">Web 测试</h3>
+                <p className="text-muted-foreground text-sm">让 AI 在 Web 浏览器中执行测试</p>
+              </div>
+              <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-blue-500 group-hover:translate-x-1 transition-all" />
+            </CardContent>
+          </Card>
+        </Link>
+
+        <Link href="/devices" className="block group">
+          <Card className="h-full transition-all hover:shadow-lg hover:border-slate-500 cursor-pointer">
+            <CardContent className="p-6 flex items-center gap-5">
+              <div className="p-4 rounded-2xl bg-gradient-to-br from-slate-500 to-slate-600 text-white group-hover:scale-105 transition-transform">
                 <Smartphone className="h-8 w-8" />
               </div>
               <div className="flex-1">
-                <h3 className="text-xl font-bold mb-1">设备管理</h3>
-                <p className="text-muted-foreground text-sm">查看连接的设备状态与信息</p>
+                <h3 className="text-xl font-bold mb-1">安卓设备管理</h3>
+                <p className="text-muted-foreground text-sm">查看连接的安卓真机状态与信息</p>
               </div>
-              <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-blue-500 group-hover:translate-x-1 transition-all" />
+              <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-slate-500 group-hover:translate-x-1 transition-all" />
             </CardContent>
           </Card>
         </Link>

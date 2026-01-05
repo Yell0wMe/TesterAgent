@@ -1,0 +1,46 @@
+{
+  "stats": {
+    "total_specs": 2,
+    "generated_at": "2026-01-05T18:01:06.485620",
+    "version": "0.1",
+    "lint_summary": {
+      "total_errors": 0,
+      "total_warnings": 0,
+      "total_fixed": 0
+    }
+  },
+  "specs": [
+    {
+      "spec_id": "REQ_WEB_BAIDU_001-001",
+      "title": "搜索-正常-首页加载与搜索",
+      "source": [
+        {
+          "doc_id": "web_baidu_search",
+          "loc": "H1: 百度搜索功能验收需求文档 > H2: 2. 功能列表 > H3: 2.1 首页加载与搜索 / P3",
+          "quote": null
+        }
+      ],
+      "file": "specs/REQ_WEB_BAIDU_001-001.yaml",
+      "tags": [
+        "p0",
+        "搜索"
+      ]
+    },
+    {
+      "spec_id": "REQ_WEB_BAIDU_002-002",
+      "title": "搜索-边界-搜索联想",
+      "source": [
+        {
+          "doc_id": "web_baidu_search",
+          "loc": "H1: 百度搜索功能验收需求文档 > H2: 2. 功能列表 > H3: 2.2 搜索联想 (可选) / P6",
+          "quote": null
+        }
+      ],
+      "file": "specs/REQ_WEB_BAIDU_002-002.yaml",
+      "tags": [
+        "p1",
+        "搜索联想"
+      ]
+    }
+  ]
+}

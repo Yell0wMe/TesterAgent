@@ -1,0 +1,58 @@
+version: '0.1'
+id: REQ_WEB_BAIDU_002-002
+title: 搜索-边界-搜索联想
+source:
+- doc_id: web_baidu_search
+  loc: 'H1: 百度搜索功能验收需求文档 > H2: 2. 功能列表 > H3: 2.2 搜索联想 (可选) / P6'
+goal:
+  user_intent: 输入部分关键词时显示联想词
+  success_state: 输入框下方显示联想词下拉框
+preconditions:
+  account:
+    state: any
+  device:
+    network: any
+    region: any
+  app:
+    install_state: installed
+    cold_start: true
+  custom:
+    condition_1: 用户在搜索输入框中输入文本
+steps: []
+assertions:
+  ui:
+  - id: A1
+    type: ui_text_present
+    target: 输入框下方显示联想词下拉框
+    match: contains
+    must: true
+    description: '验证: 输入框下方显示联想词下拉框'
+  verifiable: []
+guards:
+  forbidden:
+  - real_payment
+  - account_deletion
+  - unbind_bankcard
+  - send_message
+  - submit_sensitive_form
+  safety_mode: strict
+budget:
+  max_steps: 40
+  timeout_sec: 180
+  retries:
+    max_attempts: 2
+    retry_on:
+    - timeout
+    - blocked_by_popup
+    backoff_sec: 3
+evidence:
+  required:
+  - type: screenshot_final
+    config: {}
+  - type: screenshot_on_assertions
+    config: {}
+  optional: []
+tags:
+- p1
+- 搜索联想
+notes: {}

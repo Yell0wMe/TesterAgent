@@ -297,6 +297,7 @@ class RequirementMiner:
             req_title=data.get("req_title", f"需求 {idx + 1}"),
             user_goal=data.get("user_goal", "完成操作"),
             target_app=ensure_str(data.get("target_app")),
+            target_url=ensure_str(data.get("target_url")),
             target_page=ensure_str(data.get("target_page")),
             env_specs=ensure_str(data.get("env_specs")),
             success_ui=success_ui,

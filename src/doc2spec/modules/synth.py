@@ -146,7 +146,7 @@ class SpecSynthesizer:
         )
         
         # 构建 Preconditions
-        preconditions = self._build_preconditions(item.preconditions)
+        preconditions = self._build_preconditions(item.preconditions, item.target_url)
         
         # 构建 Assertions
         assertions = self._build_assertions(item)
@@ -321,12 +321,17 @@ class SpecSynthesizer:
         
         return "\n".join(parts)
     
-    def _build_preconditions(self, conditions: list[str]) -> Preconditions:
+    def _build_preconditions(self, conditions: list[str], target_url: str | None = None) -> Preconditions:
         """构建前置条件"""
         account = AccountState()
         device = DeviceState()
         app = AppState()
         custom = {}
+        
+        # Handle Web testing: set device_type and launch_cmd
+        if target_url:
+            custom["device_type"] = "web"
+            custom["launch_cmd"] = target_url
         
         for cond in conditions:
             cond_lower = cond.lower()

@@ -60,6 +60,10 @@ class RequirementItem(BaseModel):
         default=None, 
         description="环境/设备要求（如'Android 10+', '弱网'）"
     )
+    target_url: str | None = Field(
+        default=None,
+        description="目标 URL (针对 Web 测试)"
+    )
     
     # 额外信号
     verifiable_signals: list[str] = Field(

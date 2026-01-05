@@ -32,6 +32,18 @@ async def create_direct_run(request: CreateDirectRunRequest):
     return {"run_id": run_id, "status": "pending"}
 
 
+class CreateSpecRunRequest(BaseModel):
+    bundle_path: str
+    device_id: str
+    config: dict = {}
+
+@router.post("/spec")
+async def create_spec_run(request: CreateSpecRunRequest):
+    """使用指定 Bundle 执行完整 TestSpec"""
+    run_id = await task_manager.create_spec_run(request.bundle_path, request.device_id, request.config)
+    return {"run_id": run_id, "status": "pending"}
+
+
 @router.post("/{run_id}/stop")
 async def stop_run(run_id: str):
     """停止任务"""

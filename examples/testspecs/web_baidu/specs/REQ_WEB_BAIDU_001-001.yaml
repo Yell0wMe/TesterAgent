@@ -1,0 +1,71 @@
+version: '0.1'
+id: REQ_WEB_BAIDU_001-001
+title: 搜索-正常-首页加载与搜索
+source:
+- doc_id: web_baidu_search
+  loc: 'H1: 百度搜索功能验收需求文档 > H2: 2. 功能列表 > H3: 2.1 首页加载与搜索 / P3'
+goal:
+  user_intent: 用户能够打开百度首页并进行关键词搜索
+  success_state: 显示百度Logo
+preconditions:
+  account:
+    state: any
+  device:
+    network: any
+    region: any
+  app:
+    install_state: installed
+    cold_start: true
+  custom:
+    launch_cmd: "https://www.baidu.com"
+    condition_1: 用户未进行搜索操作
+steps: []
+assertions:
+  ui:
+  - id: A1
+    type: ui_text_present
+    target: 显示百度Logo
+    match: contains
+    must: true
+    description: '验证: 显示百度Logo'
+  - id: A2
+    type: ui_text_present
+    target: 显示搜索输入框
+    match: contains
+    must: true
+    description: '验证: 显示搜索输入框'
+  - id: A3
+    type: ui_text_present
+    target: 搜索结果页标题包含关键词
+    match: contains
+    must: true
+    description: '验证: 搜索结果页标题包含关键词'
+  verifiable: []
+guards:
+  forbidden:
+  - real_payment
+  - account_deletion
+  - unbind_bankcard
+  - send_message
+  - submit_sensitive_form
+  safety_mode: strict
+budget:
+  max_steps: 40
+  timeout_sec: 180
+  retries:
+    max_attempts: 2
+    retry_on:
+    - timeout
+    - blocked_by_popup
+    backoff_sec: 3
+evidence:
+  required:
+  - type: screenshot_final
+    config: {}
+  - type: screenshot_on_assertions
+    config: {}
+  optional: []
+tags:
+- p0
+- 搜索
+notes: {}

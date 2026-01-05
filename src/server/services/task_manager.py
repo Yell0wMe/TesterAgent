@@ -170,6 +170,42 @@ class TaskManager:
         except Exception as e:
             logger.error(f"Failed to create direct run: {e}", exc_info=True)
             raise e
+
+    async def create_spec_run(self, bundle_path: str, device_id: str, config: dict = None) -> str:
+        """创建并启动基于 Bundle 的完整规格测试任务"""
+        try:
+            import json
+            
+            # Extract bundle name for run_id
+            bundle_name = os.path.basename(bundle_path).replace("_bundle", "")
+            run_id = f"spec_{bundle_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{str(uuid.uuid4())[:8]}"
+            logger.info(f"Creating spec run {run_id} for bundle {bundle_path} on device {device_id}")
+            
+            run_data = {
+                "id": run_id,
+                "type": "spec",
+                "bundle_path": bundle_path,
+                "device_id": device_id,
+                "status": "pending",
+                "created_at": datetime.now().isoformat(),
+                "logs": [],
+                "config": config or {}
+            }
+            
+            self._runs[run_id] = run_data
+            
+            # Persist initial metadata
+            os.makedirs(os.path.join("runs", run_id), exist_ok=True)
+            with open(os.path.join("runs", run_id, "run_meta.json"), "w", encoding="utf-8") as f:
+                json.dump(run_data, f, ensure_ascii=False, indent=2)
+            
+            # 异步启动
+            asyncio.create_task(self._run_spec_task(run_id, bundle_path, device_id, config or {}))
+            
+            return run_id
+        except Exception as e:
+            logger.error(f"Failed to create spec run: {e}", exc_info=True)
+            raise e
         
     async def _update_status(self, run_id: str, status: str):
         if run_id in self._runs:
@@ -315,6 +351,23 @@ class TaskManager:
             await self._update_status(run_id, "failed")
             await manager.broadcast(run_id, {"type": "status", "status": "failed"})
 
+    async def _run_spec_task(self, run_id: str, bundle_path: str, device_id: str, config: dict):
+        """执行基于 Bundle 的完整规格测试任务"""
+        await self._update_status(run_id, "running")
+        await manager.broadcast(run_id, {"type": "status", "status": "running"})
+        
+        try:
+            await self._log(run_id, f"开始执行测试规格: {os.path.basename(bundle_path)}")
+            
+            # 执行并判定
+            await self._execute_run(run_id, bundle_path=bundle_path, device_id=device_id)
+            
+        except Exception as e:
+            logger.error(f"Spec run {run_id} failed: {e}", exc_info=True)
+            await self._log(run_id, f"错误: {str(e)}")
+            await self._update_status(run_id, "failed")
+            await manager.broadcast(run_id, {"type": "status", "status": "failed"})
+
     async def _execute_run(self, run_id: str, device_id: str, bundle_path: str = None, instruction: str = None):
         """核心执行逻辑 (Runner + Judge)"""
         import os
@@ -396,8 +449,15 @@ class TaskManager:
                     from runner.executor.phoneagent_adapter import PhoneAgentAdapter
                     from runner.models.run_artifact import RunArtifact, RunMeta, RunStatus
                     
-                    # 初始化 Adapter 并运行
-                    adapter = PhoneAgentAdapter(mock=False, on_step=on_step)
+                    # 初始化 Adapter
+                    if device_id == "web":
+                        from runner.executor.web_agent_adapter import WebAgentAdapter
+                        adapter = WebAgentAdapter(api_key=api_key or "", mock=False, on_step=on_step)
+                        # Ensure job device type is web
+                        job.device.device_type = "web"
+                    else:
+                        adapter = PhoneAgentAdapter(mock=False, on_step=on_step)
+                    
                     runner.adapter = adapter # 方便 stop()
                     
                     start_time = datetime.now()

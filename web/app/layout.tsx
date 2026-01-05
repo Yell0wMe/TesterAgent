@@ -41,6 +41,9 @@ export default function RootLayout({
               <Link href="/devices" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 设备
               </Link>
+              <Link href="/web-test" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Web测试
+              </Link>
               <Link href="/runs" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 任务
               </Link>
