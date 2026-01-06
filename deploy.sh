@@ -31,9 +31,17 @@ for dep in "${deps[@]}"; do
     fi
 done
 
-# 特殊处理 python3-venv (Ubuntu/Debian)
+# 特殊处理 python3-venv 与浏览器底层库 (Ubuntu/Debian)
 if [ "$PKG_MANAGER" == "apt-get" ]; then
-    $INSTALL_CMD python3-venv python3-pip libgbm-dev
+    echo "  -> 安装额外支撑库 (Web 引擎与串口权限)..."
+    $INSTALL_CMD python3-venv python3-pip libgbm-dev udev
+    
+    # 自动配置 Android 设备访问权限 (udev 规则)
+    if [ ! -f /etc/udev/rules.d/51-android.rules ]; then
+        echo 'SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", MODE="0666"' | sudo tee /etc/udev/rules.d/51-android.rules
+        sudo udevadm control --reload-rules
+        echo "  ✅ 已配置 Android USB 访问权限 (udev rules)。"
+    fi
 fi
 
 # 3. 后端环境配置
