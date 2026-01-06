@@ -78,3 +78,4 @@ web/.env*.local
 Thumbs.db
 settings.json
 device_remarks.json
+logs/
